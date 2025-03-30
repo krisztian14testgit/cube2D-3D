@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinate System</title>
+    <style style="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+		
+		.container {
+			display: flex;
+			flex-direction: row wrap;
+		}
+		
+		.manipulations {
+			margin-left: 6px;
+		}
+    </style>
+</head>
+<body>
+	<div class="container">
+		<canvas id="myCanvas"></canvas>
+		<div class="manipulations">
+			<div class="coord-grid">
+				hide grid
+				<input id="hide-grid" type="checkbox"/>
+			</div>
+			
+			<form>
+				<fieldset>
+					<legend>Rectangle:</legend>
+					<div>
+						Scaler
+						<div class="slidecontainer">
+							<input id="my-slider" class="slider" type="range" min="1" max="5" value="1">
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			
+		</div>
+		
+		
+	</div>
+	
+    <script defer src="coordinate-system.js"></script>
+</body>
+</html>
