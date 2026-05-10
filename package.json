@@ -1,0 +1,20 @@
+{
+  "name": "cubes-2d-3d",
+  "version": "1.0.0",
+  "description": "Writing project with the diff LLM, practice project.",
+  "homepage": "https://github.com/krisztian14testgit/cube2D-3D#readme",
+  "bugs": {
+    "url": "https://github.com/krisztian14testgit/cube2D-3D/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krisztian14testgit/cube2D-3D.git"
+  },
+  "license": "MIT",
+  "author": "Krisztián Sára",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
