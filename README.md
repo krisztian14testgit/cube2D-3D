@@ -11,7 +11,7 @@ Programmer just checks the generated codes part and validate them.
 - step4: Drawing 3D cubes and insert them with the preserved features (rotation, scale, moving)
 
 ## Supported languages
-- Starter: vanillaJs + html canvas
+- Default lang: vanillaJs + html canvas
 - Libraires:
     - BabylonJs
     - Vite build tool
