@@ -1,6 +1,6 @@
 "use strict";
 
-class CoordinateSystem {
+export class CoordinateSystem {
 	// Set the scale of the grid (distance between points)
 	scale = 9.5;
 	
@@ -97,21 +97,6 @@ class CoordinateSystem {
 		for (let j = -this._numLinesY / 2; j <= this._numLinesY / 2; j++) {
 			this.ctx.fillText(-j, this._origin.X + 2, this._origin.Y - j * this.scale - 2);
 		}
-	}
-}
-
-
-// ----Main------
-const coordSystem = new CoordinateSystem();
-//coordSystem.#printNameTest();
-coordSystem.draw();
-
-const hideCheckbox = document.getElementById('hide-grid');
-hideCheckbox.onclick = function(event) {
-	if (event.target.checked) {
-		coordSystem.drawWithoutGrid();
-	} else {
-		coordSystem.draw();
 	}
 }
 

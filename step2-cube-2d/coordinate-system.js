@@ -1,6 +1,6 @@
 "use strict";
 
-class CoordinateSystem {
+export class CoordinateSystem {
 	// Set the scale of the grid (distance between points)
 	scale = 9.5;
 	
@@ -160,32 +160,6 @@ class CoordinateSystem {
             console.error('Multiplier must be greater than 0 and cube must be drawn first');
 		}
     }
-}
-
-
-// ----Main------
-const coordSystem = new CoordinateSystem();
-//coordSystem.#printNameTest();
-coordSystem.draw();
-coordSystem.drawCube(10, 10, 4);
-
-
-
-const hideCheckbox = document.getElementById('hide-grid');
-hideCheckbox.onclick = function(event) {
-	coordSystem.clearCanvas();
-	
-	if (event.target.checked) {
-		coordSystem.drawWithoutGrid();
-	} else {
-		coordSystem.draw();
-	}
-}
-
-const mySlider = document.getElementById('my-slider');
-mySlider.onchange = function(event) {
-	const scaler = Number(event.target.value);
-	coordSystem.scaleCube(scaler); => size is always overwritten
 }
 
 
