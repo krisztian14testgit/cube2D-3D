@@ -1,25 +1,20 @@
-import { CoordinateSystem } from './step2-cube-2d/coordinate-system.js';
+import { Menu } from './src/components/Menu.js';
+import packageJson from './package.json';
 
-const coordSystem = new CoordinateSystem();
-coordSystem.draw();
-coordSystem.drawCube(10, 10, 4);
+// Root load: initialize the modern architecture application
+export function initApp() {
+    const app = document.getElementById('app');
+    
+    app.innerHTML = `
+        <header id="header"></header>
+        <main id="content"></main>
+    `;
 
-const hideCheckbox = document.getElementById('hide-grid');
-if (hideCheckbox) {
-    hideCheckbox.onclick = function(event) {
-        coordSystem.clearCanvas();
-        if (event.target.checked) {
-            coordSystem.drawWithoutGrid();
-        } else {
-            coordSystem.draw();
-        }
-    }
+    const navContainer = document.getElementById('header');
+    const contentContainer = document.getElementById('content');
+
+    const menu = new Menu(navContainer, contentContainer, packageJson.version);
+    menu.render();
 }
 
-const mySlider = document.getElementById('my-slider');
-if (mySlider) {
-    mySlider.onchange = function(event) {
-        const scaler = Number(event.target.value);
-        coordSystem.scaleCube(scaler);
-    }
-}
+initApp();
