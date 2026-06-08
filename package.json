@@ -1,0 +1,28 @@
+{
+  "name": "cubes-2d-3d",
+  "version": "1.0.0",
+  "description": "Writing project with the diff LLM, practice project.",
+  "homepage": "https://github.com/krisztian14testgit/cube2D-3D#readme",
+  "bugs": {
+    "url": "https://github.com/krisztian14testgit/cube2D-3D/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krisztian14testgit/cube2D-3D.git"
+  },
+  "license": "MIT",
+  "author": "Krisztián Sára",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "build:prod": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vite": "^8.0.11",
+    "vitest": "^4.1.5"
+  }
+}

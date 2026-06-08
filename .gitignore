@@ -1,0 +1,6 @@
+# Ignored folders
+/dist
+/node_modules
+
+# vscode
+.vscode
