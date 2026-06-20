@@ -68,6 +68,7 @@ export function renderMenu1(container) {
     const squares = [];
     const minSize = 14;
     const maxSize = 36;
+    const maxSquares = 80;
     let animationFrameId = null;
 
     const randomDirection = () => (Math.random() < 0.5 ? -1 : 1);
@@ -88,6 +89,9 @@ export function renderMenu1(container) {
             const rect = animatedCanvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
+            if (squares.length >= maxSquares) {
+                squares.shift();
+            }
             squares.push(createSquare(x, y));
         });
     }
@@ -170,10 +174,4 @@ export function renderMenu1(container) {
     };
 
     animate();
-
-    return () => {
-        if (animationFrameId !== null) {
-            cancelAnimationFrame(animationFrameId);
-        }
-    };
 }
