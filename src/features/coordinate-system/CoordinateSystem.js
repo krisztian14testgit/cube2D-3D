@@ -96,37 +96,48 @@ export class CoordinateSystem {
         }
     }
 
-    drawCube(startX, startY, size = 1) {
-        // Store the initial cube properties for later scaling
+    drawCube(startX, startY, size = 1, angleDeg = 0) {
+        // Store the initial cube properties for later scaling/rotation
         this._cubeProps = { startX, startY, size: 1 };
         
         // Convert the start coordinates to canvas coordinates
         const startXCanvas = this._origin.X + startX * this.scale;
         const startYCanvas = this._origin.Y - startY * this.scale;
 
-        // Define the vertices of the cube
-        const vertices = [
-            { x: startXCanvas, y: startYCanvas },
-            { x: startXCanvas + size * this.scale, y: startYCanvas },
-            { x: startXCanvas + size * this.scale, y: startYCanvas - size * this.scale },
-            { x: startXCanvas, y: startYCanvas - size * this.scale },
-            { x: startXCanvas, y: startYCanvas + size * this.scale },
-            { x: startXCanvas + size * this.scale, y: startYCanvas + size * this.scale },
-            { x: startXCanvas + size * this.scale, y: startYCanvas },
-            { x: startXCanvas, y: startYCanvas },
+        // Define the four corners of the square (top-left, top-right, bottom-right, bottom-left)
+        const sideLen = size * this.scale;
+        const rawVertices = [
+            { x: startXCanvas,           y: startYCanvas - sideLen },
+            { x: startXCanvas + sideLen, y: startYCanvas - sideLen },
+            { x: startXCanvas + sideLen, y: startYCanvas },
+            { x: startXCanvas,           y: startYCanvas },
         ];
+
+        // Rotate vertices around the center of the square
+        const centerX = startXCanvas + sideLen / 2;
+        const centerY = startYCanvas - sideLen / 2;
+        const angleRad = (angleDeg * Math.PI) / 180;
+        const cosA = Math.cos(angleRad);
+        const sinA = Math.sin(angleRad);
+
+        const vertices = rawVertices.map(({ x, y }) => {
+            const dx = x - centerX;
+            const dy = y - centerY;
+            return {
+                x: centerX + dx * cosA - dy * sinA,
+                y: centerY + dx * sinA + dy * cosA,
+            };
+        });
 
         // Draw the edges of the cube
         this.ctx.strokeStyle = 'blue';
         this.ctx.lineWidth = 2;
-
-        // Draw the front face (starting from bottom left)
         this.ctx.beginPath();
         this.ctx.moveTo(vertices[0].x, vertices[0].y);
         this.ctx.lineTo(vertices[1].x, vertices[1].y);
         this.ctx.lineTo(vertices[2].x, vertices[2].y);
         this.ctx.lineTo(vertices[3].x, vertices[3].y);
-        this.ctx.lineTo(vertices[0].x, vertices[0].y);
+        this.ctx.closePath();
         this.ctx.stroke();
     }
     
