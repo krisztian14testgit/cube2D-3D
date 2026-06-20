@@ -63,7 +63,7 @@ export function renderMenu1(container) {
         });
     }
 
-    const animatedCoordSystem = new CoordinateSystem({ canvasId: 'canvas-menu2' });
+    const step2CoordSystem = new CoordinateSystem({ canvasId: 'canvas-menu2' });
     const animatedCanvas = document.getElementById('canvas-menu2');
     const squares = [];
     const minSize = 14;
@@ -135,7 +135,7 @@ export function renderMenu1(container) {
     };
 
     const drawRotatedSquare = (square) => {
-        const { ctx } = animatedCoordSystem;
+        const { ctx } = step2CoordSystem;
         ctx.save();
         ctx.translate(square.x, square.y);
         ctx.rotate(square.angle);
@@ -153,8 +153,8 @@ export function renderMenu1(container) {
             return;
         }
 
-        animatedCoordSystem.clearCanvas();
-        animatedCoordSystem.draw();
+        step2CoordSystem.clearCanvas();
+        step2CoordSystem.draw();
 
         squares.forEach((square) => {
             square.x += square.dx;

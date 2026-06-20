@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderMenu1 } from './menu1.js';
 
-describe('renderMenu1 step2 implementation', () => {
+describe('renderMenu1 - step 2 implementation', () => {
     let rafCallback = null;
 
     beforeEach(() => {
