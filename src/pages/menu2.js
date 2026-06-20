@@ -66,6 +66,10 @@ export function renderMenu2(container) {
     const coordSystem2 = new CoordinateSystem({ canvasId: 'canvas-menu2-step2' });
     const squares = [];
     const canvas2 = document.getElementById('canvas-menu2-step2');
+    const MAX_VELOCITY = 4;
+    const MAX_ROTATION_SPEED = 0.2;
+    const MIN_SIZE = 10;
+    const SIZE_RANGE = 20;
 
     if (canvas2) {
         canvas2.addEventListener('click', (event) => {
@@ -76,11 +80,11 @@ export function renderMenu2(container) {
             squares.push({
                 x: x,
                 y: y,
-                dx: (Math.random() - 0.5) * 4,
-                dy: (Math.random() - 0.5) * 4,
-                size: Math.random() * 20 + 10,
+                dx: (Math.random() - 0.5) * MAX_VELOCITY,
+                dy: (Math.random() - 0.5) * MAX_VELOCITY,
+                size: Math.random() * SIZE_RANGE + MIN_SIZE,
                 angle: 0,
-                rotationSpeed: (Math.random() - 0.5) * 0.2
+                rotationSpeed: (Math.random() - 0.5) * MAX_ROTATION_SPEED
             });
         });
 
