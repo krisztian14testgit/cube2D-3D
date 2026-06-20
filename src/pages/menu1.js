@@ -68,6 +68,7 @@ export function renderMenu1(container) {
     const squares = [];
     const minSize = 14;
     const maxSize = 36;
+    let animationFrameId = null;
 
     const randomDirection = () => (Math.random() < 0.5 ? -1 : 1);
     const randomBetween = (min, max) => min + Math.random() * (max - min);
@@ -93,15 +94,17 @@ export function renderMenu1(container) {
 
     const resolveBoundaryCollision = (square) => {
         const halfSize = square.size / 2;
-        const maxX = animatedCoordSystem._canvas.width - halfSize;
-        const maxY = animatedCoordSystem._canvas.height - halfSize;
+        const canvasWidth = animatedCanvas.width;
+        const canvasHeight = animatedCanvas.height;
+        const maxX = canvasWidth - halfSize;
+        const maxY = canvasHeight - halfSize;
 
-        if (square.x - halfSize <= 0 || square.x + halfSize >= animatedCoordSystem._canvas.width) {
+        if (square.x - halfSize <= 0 || square.x + halfSize >= canvasWidth) {
             square.dx *= -1;
             square.x = Math.max(halfSize, Math.min(maxX, square.x));
         }
 
-        if (square.y - halfSize <= 0 || square.y + halfSize >= animatedCoordSystem._canvas.height) {
+        if (square.y - halfSize <= 0 || square.y + halfSize >= canvasHeight) {
             square.dy *= -1;
             square.y = Math.max(halfSize, Math.min(maxY, square.y));
         }
@@ -160,8 +163,14 @@ export function renderMenu1(container) {
         removeCollidingSquares();
         squares.forEach(drawRotatedSquare);
 
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
     };
 
     animate();
+
+    return () => {
+        if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+        }
+    };
 }
