@@ -98,7 +98,7 @@ export class CoordinateSystem {
 
     drawCube(startX, startY, size = 1, angleDeg = 0) {
         // Store the initial cube properties for later scaling/rotation
-        this._cubeProps = { startX, startY, size: 1 };
+        this._cubeProps = { startX, startY, size };
         
         // Convert the start coordinates to canvas coordinates
         const startXCanvas = this._origin.X + startX * this.scale;
