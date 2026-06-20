@@ -20,9 +20,9 @@ export class Menu {
         this.navContainer.innerHTML = `
             <nav class="main-menu">
                 <ul>
-                    <li><a href="#menu1" data-route="menu1">Menu 1</a></li>
-                    <li><a href="#menu2" data-route="menu2">Menu 2</a></li>
-                    <li><a href="#menu3" data-route="menu3">Menu 3</a></li>
+                    <li><a href="#menu1" data-route="menu1">GPT-5.3-Codex</a></li>
+                    <li><a href="#menu2" data-route="menu2">Gemini 3.1 pro</a></li>
+                    <li><a href="#menu3" data-route="menu3">Claude Sonner 4.6</a></li>
                     <li><a href="#menu4" data-route="menu4">Menu 4</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>
