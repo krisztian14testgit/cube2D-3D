@@ -99,12 +99,12 @@ export function renderMenu1(container) {
         const maxX = canvasWidth - halfSize;
         const maxY = canvasHeight - halfSize;
 
-        if (square.x - halfSize <= 0 || square.x + halfSize >= canvasWidth) {
+        if (square.x - halfSize < 0 || square.x + halfSize > canvasWidth) {
             square.dx *= -1;
             square.x = Math.max(halfSize, Math.min(maxX, square.x));
         }
 
-        if (square.y - halfSize <= 0 || square.y + halfSize >= canvasHeight) {
+        if (square.y - halfSize < 0 || square.y + halfSize > canvasHeight) {
             square.dy *= -1;
             square.y = Math.max(halfSize, Math.min(maxY, square.y));
         }
@@ -147,6 +147,9 @@ export function renderMenu1(container) {
 
     const animate = () => {
         if (!animatedCanvas || !animatedCanvas.isConnected) {
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+            }
             return;
         }
 
