@@ -78,10 +78,10 @@ export function renderMenu2(container) {
             const y = event.clientY - rect.top;
             
             squares.push({
-                x: x,
-                y: y,
-                dx: (Math.random() - 0.5) * MAX_VELOCITY,
-                dy: (Math.random() - 0.5) * MAX_VELOCITY,
+                x,
+                y,
+                dx: (Math.random() - 0.5) * 2 * MAX_VELOCITY,
+                dy: (Math.random() - 0.5) * 2 * MAX_VELOCITY,
                 size: Math.random() * SIZE_RANGE + MIN_SIZE,
                 angle: 0,
                 rotationSpeed: (Math.random() - 0.5) * MAX_ROTATION_SPEED
@@ -125,8 +125,9 @@ export function renderMenu2(container) {
                     if (toRemove.has(j)) continue;
                     const dx = squares[i].x - squares[j].x;
                     const dy = squares[i].y - squares[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < (squares[i].size / 2 + squares[j].size / 2)) {
+                    const distSq = dx * dx + dy * dy;
+                    const radiusSum = squares[i].size / 2 + squares[j].size / 2;
+                    if (distSq < radiusSum * radiusSum) {
                         toRemove.add(i);
                         toRemove.add(j);
                     }
