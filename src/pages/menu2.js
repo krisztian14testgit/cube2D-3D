@@ -130,9 +130,10 @@ export function renderMenu2(container) {
             }
 
             if (toRemove.size > 0) {
-                const newSquares = squares.filter((_, idx) => !toRemove.has(idx));
-                squares.length = 0;
-                squares.push(...newSquares);
+                const indices = Array.from(toRemove).sort((a, b) => b - a);
+                for (let idx of indices) {
+                    squares.splice(idx, 1);
+                }
             }
 
             // Drawing
