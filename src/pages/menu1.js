@@ -1,4 +1,4 @@
-import { CoordinateSystem } from '../features/coordinate-system/CoordinateSystem.js';
+import { BasicCoordinateMenu } from '../features/coordinate-system/BasicCoordinateMenu.js';
 
 export function renderMenu1(container) {
     container.innerHTML = `
@@ -23,37 +23,6 @@ export function renderMenu1(container) {
         </div>
     `;
 
-    const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu1' });
-    const CUBE_SCALE = 1;
-    coordSystem.draw();
-    coordSystem.drawCube(10, 10, CUBE_SCALE);
-
-    const hideCheckbox = document.getElementById('hide-grid-1');
-    if (hideCheckbox) {
-        hideCheckbox.addEventListener('change', (event) => {
-            coordSystem.clearCanvas();
-            if (event.target.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            const slider = document.getElementById('my-slider-1');
-            const multiplier = slider ? Number(slider.value) : 1;
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
-
-    const slider = document.getElementById('my-slider-1');
-    if (slider) {
-        slider.addEventListener('change', (event) => {
-            const multiplier = Number(event.target.value);
-            coordSystem.clearCanvas();
-            if (hideCheckbox && hideCheckbox.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
+    const basicMenu = new BasicCoordinateMenu('canvas-menu1', 'hide-grid-1', 'my-slider-1');
+    basicMenu.init();
 }

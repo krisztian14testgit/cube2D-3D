@@ -1,4 +1,5 @@
-import { CoordinateSystem } from '../features/coordinate-system/CoordinateSystem.js';
+import { BasicCoordinateMenu } from '../features/coordinate-system/BasicCoordinateMenu.js';
+import { BouncingSquares } from '../features/bouncing-squares/BouncingSquares.js';
 
 export function renderMenu2(container) {
     container.innerHTML = `
@@ -28,134 +29,11 @@ export function renderMenu2(container) {
         </div>
     `;
 
-    const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu2' });
-    const CUBE_SCALE = 1;
-    coordSystem.draw();
-    coordSystem.drawCube(10, 10, CUBE_SCALE);
+    // Initialize Basic Coordinate Menu
+    const basicMenu = new BasicCoordinateMenu('canvas-menu2', 'hide-grid-2', 'my-slider-2');
+    basicMenu.init();
 
-    const hideCheckbox = document.getElementById('hide-grid-2');
-    if (hideCheckbox) {
-        hideCheckbox.addEventListener('change', (event) => {
-            coordSystem.clearCanvas();
-            if (event.target.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            const slider = document.getElementById('my-slider-2');
-            const multiplier = slider ? Number(slider.value) : 1;
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
-
-    const slider = document.getElementById('my-slider-2');
-    if (slider) {
-        slider.addEventListener('change', (event) => {
-            const multiplier = Number(event.target.value);
-            coordSystem.clearCanvas();
-            if (hideCheckbox && hideCheckbox.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
-
-    // Step 2 implementation
-    const coordSystem2 = new CoordinateSystem({ canvasId: 'canvas-menu2-step2' });
-    const squares = [];
-    const canvas2 = document.getElementById('canvas-menu2-step2');
-    const MAX_VELOCITY = 4;
-    const MAX_ROTATION_SPEED = 0.2;
-    const MIN_SIZE = 10;
-    const SIZE_RANGE = 20;
-
-    if (canvas2) {
-        canvas2.addEventListener('click', (event) => {
-            const rect = canvas2.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            
-            squares.push({
-                x,
-                y,
-                dx: (Math.random() - 0.5) * 2 * MAX_VELOCITY,
-                dy: (Math.random() - 0.5) * 2 * MAX_VELOCITY,
-                size: Math.random() * SIZE_RANGE + MIN_SIZE,
-                angle: 0,
-                rotationSpeed: (Math.random() - 0.5) * MAX_ROTATION_SPEED
-            });
-        });
-
-        let animationFrameId;
-        function animate() {
-            if (!document.getElementById('canvas-menu2-step2')) {
-                cancelAnimationFrame(animationFrameId);
-                return;
-            }
-
-            coordSystem2.clearCanvas();
-            coordSystem2.draw();
-
-            // Update physics and boundaries
-            for (let i = squares.length - 1; i >= 0; i--) {
-                let sq = squares[i];
-                sq.x += sq.dx;
-                sq.y += sq.dy;
-                sq.angle += sq.rotationSpeed;
-
-                const halfSize = sq.size / 2;
-
-                if (sq.x - halfSize <= 0 || sq.x + halfSize >= canvas2.width) {
-                    sq.dx = -sq.dx;
-                    sq.x = Math.max(halfSize, Math.min(canvas2.width - halfSize, sq.x));
-                }
-                if (sq.y - halfSize <= 0 || sq.y + halfSize >= canvas2.height) {
-                    sq.dy = -sq.dy;
-                    sq.y = Math.max(halfSize, Math.min(canvas2.height - halfSize, sq.y));
-                }
-            }
-
-            // Collisions
-            const toRemove = new Set();
-            for (let i = 0; i < squares.length; i++) {
-                if (toRemove.has(i)) continue;
-                for (let j = i + 1; j < squares.length; j++) {
-                    if (toRemove.has(j)) continue;
-                    const dx = squares[i].x - squares[j].x;
-                    const dy = squares[i].y - squares[j].y;
-                    const distSq = dx * dx + dy * dy;
-                    const radiusSum = squares[i].size / 2 + squares[j].size / 2;
-                    if (distSq < radiusSum * radiusSum) {
-                        toRemove.add(i);
-                        toRemove.add(j);
-                    }
-                }
-            }
-
-            if (toRemove.size > 0) {
-                const indices = Array.from(toRemove).sort((a, b) => b - a);
-                for (let idx of indices) {
-                    squares.splice(idx, 1);
-                }
-            }
-
-            // Drawing
-            const ctx = coordSystem2.ctx;
-            for (let sq of squares) {
-                ctx.save();
-                ctx.translate(sq.x, sq.y);
-                ctx.rotate(sq.angle);
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(-sq.size / 2, -sq.size / 2, sq.size, sq.size);
-                ctx.restore();
-            }
-
-            animationFrameId = requestAnimationFrame(animate);
-        }
-
-        animate();
-    }
+    // Initialize Step 2 implementation
+    const bouncingSquares = new BouncingSquares('canvas-menu2-step2');
+    bouncingSquares.startAnimation();
 }
