@@ -2,7 +2,7 @@ import { CoordinateSystem } from '../features/coordinate-system/CoordinateSystem
 
 export function renderMenu3(container) {
     container.innerHTML = `
-        <h2>Menu 3 - 2D Cube with Scale &amp; Rotation</h2>
+        <h2>Menu 3 - Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu3"></canvas>
             <div class="manipulations">
@@ -18,12 +18,6 @@ export function renderMenu3(container) {
                         <input id="my-slider-3" class="slider" type="range" min="1" max="5" value="1">
                     </div>
                 </div>
-                <div>
-                    Rotation (degrees)
-                    <div class="slidecontainer">
-                        <input id="my-rotation-3" class="slider" type="range" min="0" max="360" value="0">
-                    </div>
-                </div>
                 </fieldset>
             </div>
         </div>
@@ -35,30 +29,31 @@ export function renderMenu3(container) {
     coordSystem.drawCube(10, 10, CUBE_SCALE);
 
     const hideCheckbox = document.getElementById('hide-grid-3');
-    const slider = document.getElementById('my-slider-3');
-    const rotationSlider = document.getElementById('my-rotation-3');
-
-    function redraw() {
-        const multiplier = slider ? Number(slider.value) : 1;
-        const angleDeg = rotationSlider ? Number(rotationSlider.value) : 0;
-        coordSystem.clearCanvas();
-        if (hideCheckbox && hideCheckbox.checked) {
-            coordSystem.drawWithoutGrid();
-        } else {
-            coordSystem.draw();
-        }
-        coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier, angleDeg);
-    }
-
     if (hideCheckbox) {
-        hideCheckbox.addEventListener('change', redraw);
+        hideCheckbox.addEventListener('change', (event) => {
+            coordSystem.clearCanvas();
+            if (event.target.checked) {
+                coordSystem.drawWithoutGrid();
+            } else {
+                coordSystem.draw();
+            }
+            const slider = document.getElementById('my-slider-3');
+            const multiplier = slider ? Number(slider.value) : 1;
+            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
+        });
     }
 
+    const slider = document.getElementById('my-slider-3');
     if (slider) {
-        slider.addEventListener('change', redraw);
-    }
-
-    if (rotationSlider) {
-        rotationSlider.addEventListener('change', redraw);
+        slider.addEventListener('change', (event) => {
+            const multiplier = Number(event.target.value);
+            coordSystem.clearCanvas();
+            if (hideCheckbox && hideCheckbox.checked) {
+                coordSystem.drawWithoutGrid();
+            } else {
+                coordSystem.draw();
+            }
+            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
+        });
     }
 }
