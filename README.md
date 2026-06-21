@@ -7,10 +7,10 @@ Programmer just checks the generated codes part and validate them.
 ## Steps of the cube project
 - step1: Creating coordinate-system, drawing with one square (done)
 - step2: drawing a 2D squares with the rotatation around z-axis, scala them.
-- - They will appear on the coordinate point (x,y) when the user clicks on coodinate-system.
+- - They will appear on the coordinate point (x,y) when the user clicks on coordinate-system.
 - - The square has random scale size and they move to the random direction. When they reach the boundary of the coordinate-system and direction will be opposite way.
 - - They rotates around z-axis with random speed.
-- - Collision: When two square encounter each other, they will be disapper from the coordinate-system.
+- - Collision: When two square encounter each other, they will disappear from the coordinate-system.
 - step3: Drawing more 2D cubes (count: n), extra feature moving.
 - step4: Drawing 3D cubes and insert them with the preserved features (rotation, scale, moving)
 
