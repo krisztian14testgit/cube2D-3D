@@ -6,6 +6,7 @@ import {
 
 export function renderMenu1(container) {
     container.innerHTML = `
+        <h3>Step 1 - Basic Coordinate System</h3>
         ${createCoordinateMenuMarkup({
             title: 'Menu 1 - Coordinate System',
             canvasId: 'canvas-menu1',
