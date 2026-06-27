@@ -23,34 +23,40 @@ describe('PhysicsEngine', () => {
 
     describe('bounce()', () => {
         it('does not change velocity when square is well inside boundaries', () => {
-            const s = makeSquare({ x: 250, y: 250, dx: 2, dy: 2 });
+            const SQUARE_DX = 2;  // horizontal velocity well away from walls
+            const SQUARE_DY = 2;  // vertical velocity well away from walls
+            const s = makeSquare({ x: 250, y: 250, dx: SQUARE_DX, dy: SQUARE_DY });
             engine.bounce(s, CANVAS_W, CANVAS_H);
-            expect(s.dx).toBe(2);
-            expect(s.dy).toBe(2);
+            expect(s.dx).toBe(SQUARE_DX);
+            expect(s.dy).toBe(SQUARE_DY);
         });
 
         it('inverts dx when the square hits the left wall', () => {
-            const s = makeSquare({ x: 1, y: 250, dx: -2, dy: 1 });
+            const APPROACH_DX = -2;  // dx moving toward the left wall
+            const s = makeSquare({ x: 1, y: 250, dx: APPROACH_DX, dy: 1 });
             engine.bounce(s, CANVAS_W, CANVAS_H);
-            expect(s.dx).toBe(2);
+            expect(s.dx).toBe(-APPROACH_DX);  // inverted: -(-2) = 2
         });
 
         it('inverts dx when the square hits the right wall', () => {
-            const s = makeSquare({ x: CANVAS_W - 1, y: 250, dx: 2, dy: 1 });
+            const APPROACH_DX = 2;  // dx moving toward the right wall
+            const s = makeSquare({ x: CANVAS_W - 1, y: 250, dx: APPROACH_DX, dy: 1 });
             engine.bounce(s, CANVAS_W, CANVAS_H);
-            expect(s.dx).toBe(-2);
+            expect(s.dx).toBe(-APPROACH_DX);  // inverted: -(2) = -2
         });
 
         it('inverts dy when the square hits the top wall', () => {
-            const s = makeSquare({ x: 250, y: 1, dx: 1, dy: -2 });
+            const APPROACH_DY = -2;  // dy moving toward the top wall
+            const s = makeSquare({ x: 250, y: 1, dx: 1, dy: APPROACH_DY });
             engine.bounce(s, CANVAS_W, CANVAS_H);
-            expect(s.dy).toBe(2);
+            expect(s.dy).toBe(-APPROACH_DY);  // inverted: -(-2) = 2
         });
 
         it('inverts dy when the square hits the bottom wall', () => {
-            const s = makeSquare({ x: 250, y: CANVAS_H - 1, dx: 1, dy: 2 });
+            const APPROACH_DY = 2;  // dy moving toward the bottom wall
+            const s = makeSquare({ x: 250, y: CANVAS_H - 1, dx: 1, dy: APPROACH_DY });
             engine.bounce(s, CANVAS_W, CANVAS_H);
-            expect(s.dy).toBe(-2);
+            expect(s.dy).toBe(-APPROACH_DY);  // inverted: -(2) = -2
         });
 
         it('clamps x so it stays inside the boundary after bounce', () => {
