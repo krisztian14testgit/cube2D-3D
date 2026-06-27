@@ -1,4 +1,4 @@
-import { CoordinateSystem } from '../../../features/coordinate-system/CoordinateSystem.js';
+import { CoordinateSystem } from '../CoordinateSystem.js';
 
 const DEFAULT_CUBE_SCALE = 1;
 const DEFAULT_CUBE_POSITION = Object.freeze({ x: 10, y: 10 });

@@ -1,4 +1,4 @@
-import { CoordinateSystem } from '../../../features/coordinate-system/CoordinateSystem.js';
+import { CoordinateSystem } from '../CoordinateSystem.js';
 
 const DEFAULTS = Object.freeze({
     minSize: 14,
