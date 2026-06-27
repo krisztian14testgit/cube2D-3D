@@ -6,6 +6,7 @@ import {
 
 export function renderMenu1(container) {
     container.innerHTML = `
+        <p>This coordinate system and cube drawing were written by GPT-5.3 Codex.</p>
         <h3>Step 1 - Basic Coordinate System</h3>
         ${createCoordinateMenuMarkup({
             title: 'Menu 1 - Coordinate System',
