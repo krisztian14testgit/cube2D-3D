@@ -1,8 +1,12 @@
 import { CoordinateSystem } from '../claude-sonnet-4.6/features/coordinate-system/CoordinateSystem.js';
+import { BouncingSquaresScene } from '../claude-sonnet-4.6/features/bouncing-squares/BouncingSquaresScene.js';
+import { PhysicsEngine } from '../claude-sonnet-4.6/features/bouncing-squares/PhysicsEngine.js';
+import { SquareRenderer } from '../claude-sonnet-4.6/features/bouncing-squares/SquareRenderer.js';
 
 export function renderMenu3(container) {
     container.innerHTML = `
-        <h2>Menu 3 - Coordinate System</h2>
+        <p>This coordinate system and cube drawing were written by Claude Sonnet 4.6.</p>
+        <h2>Step 1 - Basic Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu3"></canvas>
             <div class="manipulations">
@@ -21,8 +25,17 @@ export function renderMenu3(container) {
                 </fieldset>
             </div>
         </div>
+
+        <hr>
+
+        <h2>Step 2 - Bouncing &amp; Rotating Squares</h2>
+        <p>Click on the canvas to spawn a square. Squares bounce off the walls and disappear when they collide with each other.</p>
+        <div class="canvas-container">
+            <canvas id="canvas-step2"></canvas>
+        </div>
     `;
 
+    // ── Step 1: Basic Coordinate System ──────────────────────────────────────
     const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu3' });
     const CUBE_SCALE = 1;
     coordSystem.draw();
@@ -56,4 +69,18 @@ export function renderMenu3(container) {
             coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
         });
     }
+
+    // ── Step 2: Bouncing & Rotating Squares ──────────────────────────────────
+    const step2Canvas = document.getElementById('canvas-step2');
+    if (step2Canvas) {
+        const coordSystem2 = new CoordinateSystem({ canvasId: 'canvas-step2' });
+        const scene = new BouncingSquaresScene(
+            step2Canvas,
+            coordSystem2,
+            new PhysicsEngine(),
+            new SquareRenderer()
+        );
+        scene.start();
+    }
 }
+
