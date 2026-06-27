@@ -9,7 +9,7 @@ describe('SquareModel', () => {
     const INITIAL_Y = 100;                // centre Y position (pixels)
     const INITIAL_SIZE = 40;              // side length (pixels)
     const INITIAL_DX = 2;                 // horizontal velocity (pixels/frame)
-    const INITIAL_DY = -3;               // vertical velocity, upward (pixels/frame)
+    const INITIAL_DY = -3;               // vertical velocity (negative = upward on screen, canvas y decreases)
     const INITIAL_ROTATION_SPEED = 0.05; // rotation delta per frame (radians)
     const DEFAULT_ANGLE = 0;             // default initial rotation (radians)
 
