@@ -1,8 +1,12 @@
-import { BasicCoordinateMenu } from '../gemini3.1-pro/features/coordinate-system/BasicCoordinateMenu.js';
+import { CoordinateSystem } from '../claude-sonnet-4.6/features/coordinate-system/CoordinateSystem.js';
+import { BouncingSquaresScene } from '../claude-sonnet-4.6/features/bouncing-squares/BouncingSquaresScene.js';
+import { PhysicsEngine } from '../claude-sonnet-4.6/features/bouncing-squares/PhysicsEngine.js';
+import { SquareRenderer } from '../claude-sonnet-4.6/features/bouncing-squares/SquareRenderer.js';
 
 export function renderMenu3(container) {
     container.innerHTML = `
-        <h2>Menu 3 - Basic Coordinate System</h2>
+        <p>This coordinate system and cube drawing were written by Claude Sonnet 4.6.</p>
+        <h2>Step 1 - Basic Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu3"></canvas>
             <div class="manipulations">
@@ -21,8 +25,62 @@ export function renderMenu3(container) {
                 </fieldset>
             </div>
         </div>
+
+        <hr>
+
+        <h2>Step 2 - Bouncing &amp; Rotating Squares</h2>
+        <p>Click on the canvas to spawn a square. Squares bounce off the walls and disappear when they collide with each other.</p>
+        <div class="canvas-container">
+            <canvas id="canvas-step2"></canvas>
+        </div>
     `;
 
-    const basicMenu = new BasicCoordinateMenu('canvas-menu3', 'hide-grid-3', 'my-slider-3');
-    basicMenu.init();
+    // ── Step 1: Basic Coordinate System ──────────────────────────────────────
+    const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu3' });
+    const CUBE_SCALE = 1;
+    coordSystem.draw();
+    coordSystem.drawCube(10, 10, CUBE_SCALE);
+
+    const hideCheckbox = document.getElementById('hide-grid-3');
+    if (hideCheckbox) {
+        hideCheckbox.addEventListener('change', (event) => {
+            coordSystem.clearCanvas();
+            if (event.target.checked) {
+                coordSystem.drawWithoutGrid();
+            } else {
+                coordSystem.draw();
+            }
+            const slider = document.getElementById('my-slider-3');
+            const multiplier = slider ? Number(slider.value) : 1;
+            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
+        });
+    }
+
+    const slider = document.getElementById('my-slider-3');
+    if (slider) {
+        slider.addEventListener('change', (event) => {
+            const multiplier = Number(event.target.value);
+            coordSystem.clearCanvas();
+            if (hideCheckbox && hideCheckbox.checked) {
+                coordSystem.drawWithoutGrid();
+            } else {
+                coordSystem.draw();
+            }
+            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
+        });
+    }
+
+    // ── Step 2: Bouncing & Rotating Squares ──────────────────────────────────
+    const step2Canvas = document.getElementById('canvas-step2');
+    if (step2Canvas) {
+        const coordSystem2 = new CoordinateSystem({ canvasId: 'canvas-step2' });
+        const scene = new BouncingSquaresScene(
+            step2Canvas,
+            coordSystem2,
+            new PhysicsEngine(),
+            new SquareRenderer()
+        );
+        scene.start();
+    }
 }
+

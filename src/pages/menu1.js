@@ -2,7 +2,7 @@ import { BasicCoordinateMenu } from '../gemini3.1-pro/features/coordinate-system
 
 export function renderMenu1(container) {
     container.innerHTML = `
-        <h2>Menu 1 - Basic Coordinate System</h2>
+        <h2>Step 1 - Basic Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu1"></canvas>
             <div class="manipulations">
