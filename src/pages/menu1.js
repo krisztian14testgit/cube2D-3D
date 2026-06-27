@@ -1,4 +1,4 @@
-import { BasicCoordinateMenu } from '../features/coordinate-system/BasicCoordinateMenu.js';
+import { BasicCoordinateMenu } from '../gemini3.1-pro/features/coordinate-system/BasicCoordinateMenu.js';
 
 export function renderMenu1(container) {
     container.innerHTML = `

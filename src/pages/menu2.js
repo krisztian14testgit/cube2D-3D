@@ -1,5 +1,5 @@
-import { BasicCoordinateMenu } from '../features/coordinate-system/BasicCoordinateMenu.js';
-import { BouncingSquares } from '../features/bouncing-squares/BouncingSquares.js';
+import { BasicCoordinateMenu } from '../gemini3.1-pro/features/coordinate-system/BasicCoordinateMenu.js';
+import { BouncingSquares } from '../gemini3.1-pro/features/bouncing-squares/BouncingSquares.js';
 
 export function renderMenu2(container) {
     container.innerHTML = `

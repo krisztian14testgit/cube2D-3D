@@ -51,24 +51,33 @@ describe('BouncingSquares', () => {
     });
 
     it('should add a square when addSquare is called', () => {
+        const expectedInitialSquaresCount = 0;
+        const expectedSquaresCount = 1;
+        const expectedX = 100;
+        const expectedY = 100;
+
         const bouncing = new BouncingSquares('test-canvas');
-        expect(bouncing.squares.length).toBe(0);
+        expect(bouncing.squares.length).toBe(expectedInitialSquaresCount);
         
         bouncing.addSquare(100, 100);
-        expect(bouncing.squares.length).toBe(1);
-        expect(bouncing.squares[0].x).toBe(100);
-        expect(bouncing.squares[0].y).toBe(100);
+        expect(bouncing.squares.length).toBe(expectedSquaresCount);
+        expect(bouncing.squares[0].x).toBe(expectedX);
+        expect(bouncing.squares[0].y).toBe(expectedY);
     });
 
     it('should add a square on canvas click', () => {
+        const expectedSquaresCount = 1;
+        const expectedX = 150;
+        const expectedY = 150;
+
         const bouncing = new BouncingSquares('test-canvas');
         
         const event = new MouseEvent('click', { clientX: 150, clientY: 150 });
         canvas.dispatchEvent(event);
         
-        expect(bouncing.squares.length).toBe(1);
-        expect(bouncing.squares[0].x).toBe(150);
-        expect(bouncing.squares[0].y).toBe(150);
+        expect(bouncing.squares.length).toBe(expectedSquaresCount);
+        expect(bouncing.squares[0].x).toBe(expectedX);
+        expect(bouncing.squares[0].y).toBe(expectedY);
     });
 
     it('should start animation loop and update physics', () => {
