@@ -1,8 +1,8 @@
-import { BouncingSquaresSimulation } from '../features/bouncing-squares/BouncingSquaresSimulation.js';
+import { BouncingSquaresSimulation } from '../gpt5.3-codex/features/bouncing-squares/BouncingSquaresSimulation.js';
 import {
     createCoordinateMenuMarkup,
     initializeCoordinateMenuInteractions
-} from '../features/coordinate-system/renderCoordinateMenuPage.js';
+} from '../gpt5.3-codex/features/coordinate-system/renderCoordinateMenuPage.js';
 
 export function renderMenu1(container) {
     container.innerHTML = `
