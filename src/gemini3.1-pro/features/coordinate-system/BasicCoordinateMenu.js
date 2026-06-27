@@ -1,49 +1,49 @@
 import { CoordinateSystem } from './CoordinateSystem.js';
 
 export class BasicCoordinateMenu {
-    #coordSystem;
-    #canvasId;
-    #hideCheckboxId;
-    #sliderId;
-    #cubeScale = 1;
+    _coordSystem;
+    _canvasId;
+    _hideCheckboxId;
+    _sliderId;
+    _cubeScale = 1;
 
     constructor(canvasId, hideCheckboxId, sliderId) {
-        this.#canvasId = canvasId;
-        this.#hideCheckboxId = hideCheckboxId;
-        this.#sliderId = sliderId;
+        this._canvasId = canvasId;
+        this._hideCheckboxId = hideCheckboxId;
+        this._sliderId = sliderId;
     }
 
     init() {
-        this.#coordSystem = new CoordinateSystem({ canvasId: this.#canvasId });
-        this.#coordSystem.draw();
-        this.#coordSystem.drawCube(10, 10, this.#cubeScale);
-        this.#attachEventListeners();
+        this._coordSystem = new CoordinateSystem({ canvasId: this._canvasId });
+        this._coordSystem.draw();
+        this._coordSystem.drawCube(10, 10, this._cubeScale);
+        this._attachEventListeners();
     }
 
-    #attachEventListeners() {
-        const hideCheckbox = document.getElementById(this.#hideCheckboxId);
-        const slider = document.getElementById(this.#sliderId);
+    _attachEventListeners() {
+        const hideCheckbox = document.getElementById(this._hideCheckboxId);
+        const slider = document.getElementById(this._sliderId);
 
         if (hideCheckbox) {
             hideCheckbox.addEventListener('change', (event) => {
-                this.#updateDisplay(event.target.checked, slider ? Number(slider.value) : 1);
+                this._updateDisplay(event.target.checked, slider ? Number(slider.value) : 1);
             });
         }
 
         if (slider) {
             slider.addEventListener('change', (event) => {
-                this.#updateDisplay(hideCheckbox ? hideCheckbox.checked : false, Number(event.target.value));
+                this._updateDisplay(hideCheckbox ? hideCheckbox.checked : false, Number(event.target.value));
             });
         }
     }
 
-    #updateDisplay(hideGrid, multiplier) {
-        this.#coordSystem.clearCanvas();
+    _updateDisplay(hideGrid, multiplier) {
+        this._coordSystem.clearCanvas();
         if (hideGrid) {
-            this.#coordSystem.drawWithoutGrid();
+            this._coordSystem.drawWithoutGrid();
         } else {
-            this.#coordSystem.draw();
+            this._coordSystem.draw();
         }
-        this.#coordSystem.drawCube(10, 10, this.#cubeScale * multiplier);
+        this._coordSystem.drawCube(10, 10, this._cubeScale * multiplier);
     }
 }
