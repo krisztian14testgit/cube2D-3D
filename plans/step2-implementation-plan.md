@@ -1,7 +1,7 @@
 ## Plan: Step 2 Bouncing & Rotating Squares
 
 **Git Workflow**
-- First, create a new branch from `development` (or `develop`).
+- First, create a new branch from `develop`.
 - When the implementation is finished, make a new Pull Request back to the `develop` branch.
 
 **Overview**
@@ -31,4 +31,3 @@ Implement the Step 2 requirements in the same Menu 1 view.
 **Testing part**
 Make sure the changes are right in that case to run `npm run build`. If you get success build, the changes are passed.
 If you get error during the build. Analyze the errors and try to fix them. Iterate until you get success build result.
-

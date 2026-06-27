@@ -6,7 +6,7 @@ Programmer just checks the generated codes part and validate them.
 
 ## Steps of the cube project
 - step1: Creating coordinate-system, drawing with one square (done)
-- step2: drawing a 2D squares with the rotatation around z-axis, scala them.
+- step2: drawing a 2D squares with the rotation around z-axis, scale them.
 - - They will appear on the coordinate point (x,y) when the user clicks on coordinate-system.
 - - The square has random scale size and they move to the random direction. When they reach the boundary of the coordinate-system and direction will be opposite way.
 - - They rotates around z-axis with random speed.

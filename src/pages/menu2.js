@@ -3,7 +3,7 @@ import { BouncingSquares } from '../gemini3.1-pro/features/bouncing-squares/Boun
 
 export function renderMenu2(container) {
     container.innerHTML = `
-        <p>This conrdinate system and cube drawing were written by Gemini 3.1 pro.</p>
+        <p>This coordinate system and cube drawing were written by Gemini 3.1 pro.</p>
         <h2>Menu 2 - Basic Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu2"></canvas>
