@@ -1,4 +1,4 @@
-import { CoordinateSystem } from '../claude-sonnet.4./features/coordinate-system/CoordinateSystem.js';
+import { CoordinateSystem } from '../claude-sonnet-4.6/features/coordinate-system/CoordinateSystem.js';
 
 export function renderMenu4(container) {
     container.innerHTML = `

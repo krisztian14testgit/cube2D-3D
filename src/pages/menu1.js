@@ -1,7 +1,7 @@
-import { CoordinateSystem } from '../claude-sonnet.4./features/coordinate-system/CoordinateSystem.js';
-import { BouncingSquaresScene } from '../claude-sonnet.4./features/bouncing-squares/BouncingSquaresScene.js';
-import { PhysicsEngine } from '../claude-sonnet.4./features/bouncing-squares/PhysicsEngine.js';
-import { SquareRenderer } from '../claude-sonnet.4./features/bouncing-squares/SquareRenderer.js';
+import { CoordinateSystem } from '../claude-sonnet-4.6/features/coordinate-system/CoordinateSystem.js';
+import { BouncingSquaresScene } from '../claude-sonnet-4.6/features/bouncing-squares/BouncingSquaresScene.js';
+import { PhysicsEngine } from '../claude-sonnet-4.6/features/bouncing-squares/PhysicsEngine.js';
+import { SquareRenderer } from '../claude-sonnet-4.6/features/bouncing-squares/SquareRenderer.js';
 
 export function renderMenu1(container) {
     container.innerHTML = `
