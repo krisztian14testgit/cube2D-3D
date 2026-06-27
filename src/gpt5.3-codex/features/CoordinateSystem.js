@@ -4,7 +4,7 @@ export class CoordinateSystem {
     // Set the scale of the grid (distance between points)
     scale = 9.5;
 
-    #defaultProp = { 
+    _defaultProp = { 
         width: 513,
         height: 513,
         contextType: '2d',
@@ -14,7 +14,7 @@ export class CoordinateSystem {
     _cubeProps = null;
 
     constructor(params = {}) {
-        const config = { ...this.#defaultProp, ...params };
+        const config = { ...this._defaultProp, ...params };
         
         if (params.canvasElement) {
             this._canvas = params.canvasElement;

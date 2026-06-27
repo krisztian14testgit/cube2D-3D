@@ -1,7 +1,9 @@
-import { CoordinateSystem } from '../features/coordinate-system/CoordinateSystem.js';
+import { BasicCoordinateMenu } from '../gemini3.1-pro/features/coordinate-system/BasicCoordinateMenu.js';
+import { BouncingSquares } from '../gemini3.1-pro/features/bouncing-squares/BouncingSquares.js';
 
 export function renderMenu2(container) {
     container.innerHTML = `
+        <p>This coordinate system and cube drawing were written by Gemini 3.1 pro.</p>
         <h2>Menu 2 - Basic Coordinate System</h2>
         <div class="canvas-container">
             <canvas id="canvas-menu2"></canvas>
@@ -21,39 +23,18 @@ export function renderMenu2(container) {
                 </fieldset>
             </div>
         </div>
+        <hr>
+        <h2>Step 2 - Bouncing & Rotating Squares</h2>
+        <div class="canvas-container">
+            <canvas id="canvas-menu2-step2"></canvas>
+        </div>
     `;
 
-    const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu2' });
-    const CUBE_SCALE = 1;
-    coordSystem.draw();
-    coordSystem.drawCube(10, 10, CUBE_SCALE);
+    // Initialize Basic Coordinate Menu
+    const basicMenu = new BasicCoordinateMenu('canvas-menu2', 'hide-grid-2', 'my-slider-2');
+    basicMenu.init();
 
-    const hideCheckbox = document.getElementById('hide-grid-2');
-    if (hideCheckbox) {
-        hideCheckbox.addEventListener('change', (event) => {
-            coordSystem.clearCanvas();
-            if (event.target.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            const slider = document.getElementById('my-slider-2');
-            const multiplier = slider ? Number(slider.value) : 1;
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
-
-    const slider = document.getElementById('my-slider-2');
-    if (slider) {
-        slider.addEventListener('change', (event) => {
-            const multiplier = Number(event.target.value);
-            coordSystem.clearCanvas();
-            if (hideCheckbox && hideCheckbox.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
+    // Initialize Step 2 implementation
+    const bouncingSquares = new BouncingSquares('canvas-menu2-step2');
+    bouncingSquares.startAnimation();
 }

@@ -1,59 +1,37 @@
-import { CoordinateSystem } from '../features/coordinate-system/CoordinateSystem.js';
+import { BouncingSquaresSimulation } from '../gpt5.3-codex/features/bouncing-squares/BouncingSquaresSimulation.js';
+import {
+    createCoordinateMenuMarkup,
+    initializeCoordinateMenuInteractions
+} from '../gpt5.3-codex/features/coordinate-system/renderCoordinateMenuPage.js';
 
 export function renderMenu1(container) {
     container.innerHTML = `
-        <h2>Menu 1 - Basic Coordinate System</h2>
+        <p>This coordinate system and cube drawing were written by GPT-5.3 Codex.</p>
+        <h3>Step 1 - Basic Coordinate System</h3>
+        ${createCoordinateMenuMarkup({
+            title: 'Menu 1 - Coordinate System',
+            canvasId: 'canvas-menu1',
+            hideGridId: 'hide-grid-1',
+            sliderId: 'my-slider-1'
+        })}
+        <hr>
+        <h3>Step 2 - Bouncing & Rotating Squares</h3>
         <div class="canvas-container">
-            <canvas id="canvas-menu1"></canvas>
-            <div class="manipulations">
-                <label>
-                    <input id="hide-grid-1" type="checkbox"/>
-                    Hide grid
-                </label>
-                <fieldset>
-                <legend>Rectangle:</legend>
-                <div>
-                    Scaler
-                    <div class="slidecontainer">
-                        <input id="my-slider-1" class="slider" type="range" min="1" max="5" value="1">
-                    </div>
-                </div>
-                </fieldset>
-            </div>
+            <canvas id="canvas-menu2"></canvas>
         </div>
     `;
 
-    const coordSystem = new CoordinateSystem({ canvasId: 'canvas-menu1' });
-    const CUBE_SCALE = 1;
-    coordSystem.draw();
-    coordSystem.drawCube(10, 10, CUBE_SCALE);
+    initializeCoordinateMenuInteractions(container, {
+        canvasId: 'canvas-menu1',
+        hideGridId: 'hide-grid-1',
+        sliderId: 'my-slider-1'
+    });
 
-    const hideCheckbox = document.getElementById('hide-grid-1');
-    if (hideCheckbox) {
-        hideCheckbox.addEventListener('change', (event) => {
-            coordSystem.clearCanvas();
-            if (event.target.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            const slider = document.getElementById('my-slider-1');
-            const multiplier = slider ? Number(slider.value) : 1;
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
+    const animatedCanvas = container.querySelector('#canvas-menu2');
+    if (!animatedCanvas) {
+        return;
     }
 
-    const slider = document.getElementById('my-slider-1');
-    if (slider) {
-        slider.addEventListener('change', (event) => {
-            const multiplier = Number(event.target.value);
-            coordSystem.clearCanvas();
-            if (hideCheckbox && hideCheckbox.checked) {
-                coordSystem.drawWithoutGrid();
-            } else {
-                coordSystem.draw();
-            }
-            coordSystem.drawCube(10, 10, CUBE_SCALE * multiplier);
-        });
-    }
+    const simulation = new BouncingSquaresSimulation(animatedCanvas);
+    simulation.start();
 }
