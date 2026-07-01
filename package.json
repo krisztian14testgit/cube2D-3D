@@ -20,6 +20,9 @@
     "build:prod": "vite preview",
     "test": "vitest run --coverage"
   },
+  "dependencies": {
+    "three": "^0.185.0"
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.9",
     "jsdom": "^29.1.1",
