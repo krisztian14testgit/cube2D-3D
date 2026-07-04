@@ -8,8 +8,11 @@
 **Goal**
 - Render a 3D coordinate-system with three visible axes on a single canvas.
 - Axis colors must be `X = red`, `Y = green`, `Z = blue`.
+- Display axis labels as `x`, `y`, `z` in the 3D coordinate-system.
 - When the user clicks inside the 3D coordinate-system, create one cube in that same canvas.
+- If a cube already exists, clicking again should remove the previous cube and render a new cube at the new target point.
 - After the cube exists, show a control menu beside the canvas for scale, rotation axis, rotation speed, and cube face colors.
+- Include a `Reset` button in cube controls that restores transform values to defaults (scale and rotation state).
 - Default cube color should be light blue.
 
 **Technical Constraints**
@@ -74,6 +77,7 @@
    - Exposes methods such as:
      - `initialize()`
      - `createCubeAtPointer(event)`
+     - `resetCubeTransform()`
      - `setCubeScale(scale)`
      - `setRotationAxis(axis)`
      - `setRotationSpeed(speed)`
@@ -104,6 +108,7 @@
 - Coordinate-system rendering:
   - Use `THREE.AxesHelper(size)` as the base axis visualizer.
   - Explicitly call `axesHelper.setColors('red', 'green', 'blue')` so the requirement is fixed in code.
+  - Add axis labels `x`, `y`, `z` near positive axis directions (for example with lightweight text sprites) so labels stay visible in the same scene.
   - Optionally add a subtle `THREE.GridHelper` or a transparent interaction plane, but keep the visible emphasis on the three axes.
 
 - Cube rendering:
@@ -116,11 +121,11 @@
   - On first click inside the canvas, translate pointer coordinates into normalized device coordinates.
   - Use `THREE.Raycaster.setFromCamera()`.
   - Intersect a fixed helper plane near the origin so the cube appears in a predictable place inside the coordinate-system.
-  - Create only one cube initially.
-  - On later clicks, choose one of these behaviors and keep it explicit in code:
-    - ignore extra clicks while the cube exists, or
-    - reposition the current cube
-  - Preferred first implementation: ignore extra cube creation clicks after the first cube exists, because it keeps scope tight and matches the single-control-panel requirement.
+  - Keep only one active cube in the scene.
+  - On every click after the first:
+    - remove and dispose the previous cube mesh resources
+    - create and render a new cube at the clicked target point
+  - Keep control state bound to the active cube so UI behavior remains consistent.
 
 - Rotation behavior:
   - Keep one active axis at a time: `x`, `y`, or `z`.
@@ -159,6 +164,7 @@
    - `Rotate axis` selector with `X`, `Y`, `Z`
    - `Rotation speed` slider
    - `Face colors` section with six color inputs
+   - `Reset` button that restores default transform values
 
 3. Initial state
    - Controls shown as disabled until the cube is created.
@@ -208,6 +214,7 @@
    - Implement scale updates.
    - Implement selected-axis rotation updates.
    - Implement adjustable rotation speed.
+   - Implement `Reset` action to restore default transform state.
 
 8. Add face-color controls
    - Create six independent color inputs.
@@ -218,12 +225,16 @@
    - Handle resize.
    - Dispose all Three.js resources and listeners on teardown.
 
-10. Add tests
+10. Add axis labels
+   - Render visible `x`, `y`, `z` labels anchored to axes.
+   - Keep labels stable during animation and resize.
+
+11. Add tests
    - Cover page rendering and control enablement.
-   - Cover scene orchestration and cube creation flow with mocks.
+   - Cover scene orchestration and cube replacement-on-click flow with mocks.
    - Cover controller behavior for transform and face-color updates.
 
-11. Validate integration
+12. Validate integration
    - Run tests.
    - Run the Vite build.
    - Manually verify the menu navigation and 3D interaction in the browser.
@@ -240,13 +251,15 @@
   - updates scale
   - switches rotation axis
   - updates rotation speed
+  - resets transform state to defaults when `Reset` is triggered
   - updates individual face colors
 
 - Unit tests for `ThreeCubeScene.js`
   - creates scene dependencies with canvas input
   - adds axes helper with required axis colors
-  - creates one cube on click
-  - avoids duplicate cube creation when configured to keep a single cube
+  - creates cube on click
+  - replaces previous cube when clicking a new target point
+  - adds and positions axis labels `x`, `y`, `z`
   - disposes geometry, materials, and renderer resources
 
 - Integration validation
@@ -257,21 +270,24 @@
 1. The navigation shows a new entry labeled `3D cube - three.js`.
 2. Opening `menu5` does not change the existing `menu4` 2D coordinate-system behavior.
 3. The page renders one canvas with visible `X`, `Y`, and `Z` axes in red, green, and blue.
-4. No cube is visible before the first click.
-5. Clicking inside the 3D scene creates one light-blue cube in that same canvas.
-6. The side control menu becomes active after the cube is created.
-7. Scale changes resize the same cube.
-8. Rotation axis selection changes the cube spin direction to the selected axis.
-9. Rotation speed changes are visible immediately.
-10. Each face color input updates the intended cube side.
-11. Navigating away from `menu5` and back does not leave broken canvases or duplicate animation loops.
+4. Axis labels `x`, `y`, `z` are visible in the coordinate-system.
+5. No cube is visible before the first click.
+6. Clicking inside the 3D scene creates one light-blue cube in that same canvas.
+7. Clicking again removes the previous cube and renders a new one at the new target point.
+8. The side control menu becomes active after the cube is created.
+9. Scale changes resize the same cube.
+10. Rotation axis selection changes the cube spin direction to the selected axis.
+11. Rotation speed changes are visible immediately.
+12. The `Reset` button restores default transform behavior.
+13. Each face color input updates the intended cube side.
+14. Navigating away from `menu5` and back does not leave broken canvases or duplicate animation loops.
 
 **Clean Code / SOLID Focus**
 - Keep DOM rendering separate from Three.js scene logic.
 - Keep scene ownership in one class so cleanup is reliable.
 - Keep cube mutation behind a controller boundary instead of mutating the mesh directly from event handlers.
 - Keep state defaults centralized so tests and runtime use the same source of truth.
-- Keep the first implementation intentionally limited to one cube to avoid premature complexity.
+- Keep exactly one active cube at a time by replacing the previous cube on each new click target.
 
 **Risks And Mitigations**
 - Risk: Three.js objects are harder to unit test directly in `jsdom`.
@@ -294,8 +310,11 @@
 - `menu5` exists and is labeled `3D cube - three.js`.
 - The feature uses `three.js` only.
 - The 3D scene shows red, green, and blue axes.
+- The 3D scene shows axis labels `x`, `y`, and `z`.
 - A cube is created by clicking inside the 3D coordinate-system canvas.
+- Clicking a new target replaces the previous cube with a new one.
 - A side control menu updates cube scale, rotation axis, rotation speed, and face colors.
+- The side control menu includes a `Reset` action that restores cube transform defaults.
 - Default cube face color is light blue.
 - Existing 2D coordinate-system menus continue to work unchanged.
 - Vitest coverage is added for the new feature slice.
