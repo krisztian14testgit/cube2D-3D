@@ -1,7 +1,7 @@
 # Plan: Step 4 Three.js 3D Cube In Coordinate System
 
 **Scope**
-- Implement a new `menu5` page labeled `LLM - 3D cube`.
+- Implement a new `menu5` page labeled `3D cube - three.js`.
 - Keep the existing 2D coordinate-system features unchanged.
 - Use only `three.js` for the 3D solution. Do not add BabylonJS-based code.
 
@@ -29,7 +29,7 @@
   - Add the `three` dependency.
 - Update `src/components/Menu.js`
   - Register `menu5`.
-  - Rename the new menu item label to `LLM - 3D cube`.
+  - Rename the new menu item label to `3D cube - three.js`.
 - Add `src/pages/menu5.js`
   - Entry page for the new 3D feature.
 - Add `src/gpt5.3-codex/features/threejs-cube/renderThreeCubeMenuPage.js`
@@ -169,7 +169,7 @@
    - Current values reflect the created cube state.
 
 **Suggested Markup Shape**
-- Header: `Menu 5 - LLM - 3D cube`
+- Header: `Menu 5 - 3D cube - three.js`
 - Layout wrapper with:
   - left: canvas container
   - right: cube control panel
@@ -182,7 +182,7 @@
 
 2. Extend navigation
    - Add `menu5` route in `src/components/Menu.js`.
-   - Render the visible menu label as `LLM - 3D cube`.
+   - Render the visible menu label as `3D cube - three.js`.
 
 3. Create the new page entry
    - Add `src/pages/menu5.js`.
@@ -254,7 +254,7 @@
   - `npm run build`
 
 **Manual Verification Checklist**
-1. The navigation shows a new entry labeled `LLM - 3D cube`.
+1. The navigation shows a new entry labeled `3D cube - three.js`.
 2. Opening `menu5` does not change the existing `menu4` 2D coordinate-system behavior.
 3. The page renders one canvas with visible `X`, `Y`, and `Z` axes in red, green, and blue.
 4. No cube is visible before the first click.
@@ -291,7 +291,7 @@
 - Reworking the existing 2D coordinate-system feature
 
 **Definition Of Done**
-- `menu5` exists and is labeled `LLM - 3D cube`.
+- `menu5` exists and is labeled `3D cube - three.js`.
 - The feature uses `three.js` only.
 - The 3D scene shows red, green, and blue axes.
 - A cube is created by clicking inside the 3D coordinate-system canvas.

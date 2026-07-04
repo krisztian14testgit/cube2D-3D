@@ -2,6 +2,6 @@ import { renderThreeCubeMenuPage } from '../gpt5.3-codex/features/threejs-cube/r
 
 export function renderMenu5(container) {
     return renderThreeCubeMenuPage(container, {
-        title: 'Menu 5 - LLM - 3D cube'
+        title: 'Menu 5 - 3D cube by GPT-5.3 Codex'
     });
 }

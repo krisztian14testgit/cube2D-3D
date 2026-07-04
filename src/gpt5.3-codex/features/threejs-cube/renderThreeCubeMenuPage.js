@@ -24,7 +24,7 @@ const FACE_LABELS = Object.freeze(['Front', 'Back', 'Left', 'Right', 'Top', 'Bot
 export function renderThreeCubeMenuPage(
     container,
     {
-        title = 'Menu 5 - LLM - 3D cube',
+        title = 'Menu 5 - 3D cube by GPT-5.3 Codex',
         SceneClass = ThreeCubeScene,
         ControllerClass = CubeController
     } = {}

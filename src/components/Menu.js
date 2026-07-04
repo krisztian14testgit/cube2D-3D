@@ -30,7 +30,7 @@ export class Menu {
                     <li><a href="#menu2" data-route="menu2">Gemini 3.1 pro</a></li>
                     <li><a href="#menu3" data-route="menu3">Claude Sonnet 4.6</a></li>
                     <li><a href="#menu4" data-route="menu4">Menu 4</a></li>
-                    <li><a href="#menu5" data-route="menu5">LLM - 3D cube</a></li>
+                    <li><a href="#menu5" data-route="menu5">3D cube - three.js</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>
             </nav>

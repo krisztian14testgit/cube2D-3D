@@ -51,13 +51,13 @@ describe('renderThreeCubeMenuPage', () => {
         document.body.appendChild(container);
 
         renderThreeCubeMenuPage(container, {
-            title: 'Menu 5 - LLM - 3D cube',
+            title: 'Menu 5 - 3D cube by GPT-5.3 Codex',
             SceneClass: FakeScene,
             ControllerClass: FakeController
         });
         const controls = getControlElements(container);
 
-        expect(container.querySelector('h2')?.textContent).toContain('Menu 5 - LLM - 3D cube');
+        expect(container.querySelector('h2')?.textContent).toContain('Menu 5 - 3D cube by GPT-5.3 Codex');
         expect(controls.canvas).not.toBeNull();
         expect(controls.scaleInput.disabled).toBe(true);
         expect(controls.rotationAxisSelect.disabled).toBe(true);
