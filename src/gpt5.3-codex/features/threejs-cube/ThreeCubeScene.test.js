@@ -1,5 +1,16 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThreeCubeScene } from './ThreeCubeScene.js';
+
+function createCanvasContextStub() {
+    return {
+        clearRect: vi.fn(),
+        fillText: vi.fn(),
+        fillStyle: '',
+        font: '',
+        textAlign: '',
+        textBaseline: ''
+    };
+}
 
 function createCanvas() {
     const canvas = document.createElement('canvas');
@@ -126,10 +137,13 @@ function createFakeThree() {
 
     class FakeRaycaster {
         constructor() {
-            this.setFromCamera = vi.fn();
+            this.lastPointer = null;
+            this.setFromCamera = vi.fn((pointer) => {
+                this.lastPointer = pointer;
+            });
             this.ray = {
                 intersectPlane: vi.fn((plane, target) => {
-                    target.set(1, 2, 0);
+                    target.set(this.lastPointer?.x ?? 1, this.lastPointer?.y ?? 2, 0);
                     return target;
                 })
             };
@@ -166,6 +180,31 @@ function createFakeThree() {
         }
     }
 
+    class FakeCanvasTexture {
+        constructor(image) {
+            this.image = image;
+            this.needsUpdate = false;
+            this.dispose = vi.fn();
+        }
+    }
+
+    class FakeSpriteMaterial {
+        constructor({ map, transparent }) {
+            this.map = map;
+            this.transparent = transparent;
+            this.dispose = vi.fn();
+        }
+    }
+
+    class FakeSprite {
+        constructor(material) {
+            this.material = material;
+            this.position = new FakeVector3();
+            this.scale = new FakeVector3();
+            this.userData = {};
+        }
+    }
+
     return {
         Color: FakeColor,
         Vector2: FakeVector2,
@@ -181,7 +220,10 @@ function createFakeThree() {
         Clock: FakeClock,
         BoxGeometry: FakeBoxGeometry,
         MeshStandardMaterial: FakeMeshStandardMaterial,
-        Mesh: FakeMesh
+        Mesh: FakeMesh,
+        CanvasTexture: FakeCanvasTexture,
+        SpriteMaterial: FakeSpriteMaterial,
+        Sprite: FakeSprite
     };
 }
 
@@ -211,7 +253,18 @@ function createTestHarness() {
 }
 
 describe('ThreeCubeScene', () => {
-    it('initializes renderer, camera, and colored axes', () => {
+    let getContextSpy;
+
+    beforeEach(() => {
+        getContextSpy = vi.spyOn(HTMLCanvasElement.prototype, 'getContext')
+            .mockImplementation(() => createCanvasContextStub());
+    });
+
+    afterEach(() => {
+        getContextSpy.mockRestore();
+    });
+
+    it('initializes renderer, camera, colored axes, and axis labels', () => {
         const {
             canvas,
             three,
@@ -237,22 +290,32 @@ describe('ThreeCubeScene', () => {
         expect(xColor.value).toBe('red');
         expect(yColor.value).toBe('green');
         expect(zColor.value).toBe('blue');
+        expect(scene.axisLabels.map((axisLabel) => axisLabel.userData.axisLabel)).toEqual(['x', 'y', 'z']);
+        expect(scene.axisLabels[0].position.x).toBeGreaterThan(0);
+        expect(scene.axisLabels[1].position.y).toBeGreaterThan(0);
+        expect(scene.axisLabels[2].position.z).toBeGreaterThan(0);
         expect(windowObject.addEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
         expect(requestAnimationFrameImpl).toHaveBeenCalledTimes(1);
     });
 
-    it('creates one cube from pointer interaction and ignores extra creation clicks', () => {
+    it('creates cube from pointer interaction and replaces the previous cube on next click', () => {
         const harness = createTestHarness();
         const scene = new ThreeCubeScene(harness).initialize();
 
-        const clickEvent = new MouseEvent('click', { clientX: 320, clientY: 210 });
+        const firstClick = new MouseEvent('click', { clientX: 320, clientY: 210 });
+        const secondClick = new MouseEvent('click', { clientX: 440, clientY: 160 });
 
-        expect(scene.createCubeAtPointer(clickEvent, { faceColors: Array(6).fill('#123456') })).toBe(true);
-        expect(scene.cube).not.toBeNull();
-        expect(scene.createCubeAtPointer(clickEvent)).toBe(false);
+        expect(scene.createCubeAtPointer(firstClick, { faceColors: Array(6).fill('#123456') })).toBe(true);
+        const firstCube = scene.cube;
+        expect(scene.createCubeAtPointer(secondClick)).toBe(true);
+        expect(scene.cube).not.toBe(firstCube);
+        expect(firstCube.geometry.dispose).toHaveBeenCalledTimes(1);
+        firstCube.material.forEach((material) => {
+            expect(material.dispose).toHaveBeenCalledTimes(1);
+        });
     });
 
-    it('applies rotation, scale, and face-color updates to the active cube', () => {
+    it('applies rotation, scale, and face-color updates and can reset transform state', () => {
         const { animation, ...harness } = createTestHarness();
         const scene = new ThreeCubeScene(harness).initialize();
         scene.createCubeAtPointer(new MouseEvent('click', { clientX: 320, clientY: 210 }));
@@ -268,6 +331,15 @@ describe('ThreeCubeScene', () => {
 
         scene.setFaceColor(2, '#ff0000');
         expect(scene.cube.material[2].color.set).toHaveBeenCalledWith('#ff0000');
+
+        scene.cube.rotation.x = 1.4;
+        scene.cube.rotation.y = 0.4;
+        scene.cube.rotation.z = 0.8;
+        expect(scene.resetCubeTransform({ scale: 1, rotationAxis: 'x', rotationSpeed: 0.05 })).toBe(true);
+        expect(scene.cube.scale.setScalar).toHaveBeenCalledWith(1);
+        expect(scene.cube.rotation).toEqual({ x: 0, y: 0, z: 0 });
+        expect(scene.rotationAxis).toBe('x');
+        expect(scene.rotationSpeed).toBe(0.05);
     });
 
     it('disposes animation, renderer, listeners, and objects', () => {
@@ -278,6 +350,7 @@ describe('ThreeCubeScene', () => {
         const renderer = scene.renderer;
         const axesHelper = scene.axesHelper;
         const cube = scene.cube;
+        const axisLabels = [...scene.axisLabels];
 
         scene.dispose();
 
@@ -292,6 +365,10 @@ describe('ThreeCubeScene', () => {
         expect(cube.geometry.dispose).toHaveBeenCalledTimes(1);
         cube.material.forEach((material) => {
             expect(material.dispose).toHaveBeenCalledTimes(1);
+        });
+        axisLabels.forEach((axisLabel) => {
+            expect(axisLabel.material.map.dispose).toHaveBeenCalledTimes(1);
+            expect(axisLabel.material.dispose).toHaveBeenCalledTimes(1);
         });
         expect(scene.isInitialized).toBe(false);
     });

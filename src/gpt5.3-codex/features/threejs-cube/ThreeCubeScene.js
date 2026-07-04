@@ -1,5 +1,10 @@
 import * as THREE from 'three';
-import { DEFAULT_FACE_COLOR, DEFAULT_ROTATION_AXIS, DEFAULT_ROTATION_SPEED } from './CubeState.js';
+import {
+    DEFAULT_CUBE_SCALE,
+    DEFAULT_FACE_COLOR,
+    DEFAULT_ROTATION_AXIS,
+    DEFAULT_ROTATION_SPEED
+} from './CubeState.js';
 
 const DEFAULT_CANVAS_WIDTH = 640;
 const DEFAULT_CANVAS_HEIGHT = 420;
@@ -7,6 +12,9 @@ const AXIS_HELPER_SIZE = 4;
 const CAMERA_FOV = 60;
 const CAMERA_NEAR = 0.1;
 const CAMERA_FAR = 100;
+const AXIS_LABEL_OFFSET = 0.45;
+const AXIS_LABEL_SCALE = 0.45;
+const AXIS_LABEL_CANVAS_SIZE = 128;
 
 export class ThreeCubeScene {
     constructor({
@@ -38,6 +46,7 @@ export class ThreeCubeScene {
         this.camera = null;
         this.renderer = null;
         this.axesHelper = null;
+        this.axisLabels = [];
         this.raycaster = null;
         this.pointer = null;
         this.interactionPlane = null;
@@ -73,6 +82,7 @@ export class ThreeCubeScene {
 
         this.#addLighting();
         this.#addAxesHelper();
+        this.#addAxisLabels();
 
         this.raycaster = new this.three.Raycaster();
         this.pointer = new this.three.Vector2();
@@ -87,13 +97,19 @@ export class ThreeCubeScene {
     }
 
     createCubeAtPointer(event, { faceColors } = {}) {
-        if (this.cube || !this.isInitialized) {
+        if (!this.isInitialized) {
             return false;
         }
 
         const position = this.#resolvePointerIntersection(event);
         if (!position) {
             return false;
+        }
+
+        if (this.cube) {
+            this.scene.remove(this.cube);
+            disposeObject3D(this.cube);
+            this.cube = null;
         }
 
         const geometry = new this.three.BoxGeometry(1, 1, 1);
@@ -105,6 +121,24 @@ export class ThreeCubeScene {
         this.cube = new this.three.Mesh(geometry, materials);
         this.cube.position.copy(position);
         this.scene.add(this.cube);
+        return true;
+    }
+
+    resetCubeTransform({
+        scale = DEFAULT_CUBE_SCALE,
+        rotationAxis = DEFAULT_ROTATION_AXIS,
+        rotationSpeed = DEFAULT_ROTATION_SPEED
+    } = {}) {
+        if (!this.cube) {
+            return false;
+        }
+
+        this.cube.scale.setScalar(scale);
+        this.cube.rotation.x = 0;
+        this.cube.rotation.y = 0;
+        this.cube.rotation.z = 0;
+        this.rotationAxis = rotationAxis;
+        this.rotationSpeed = rotationSpeed;
         return true;
     }
 
@@ -164,6 +198,12 @@ export class ThreeCubeScene {
             disposeObject3D(this.axesHelper);
             this.axesHelper = null;
         }
+
+        this.axisLabels.forEach((axisLabel) => {
+            this.scene.remove(axisLabel);
+            disposeObject3D(axisLabel);
+        });
+        this.axisLabels = [];
 
         this.renderer.dispose();
         this.renderer = null;
@@ -225,6 +265,49 @@ export class ThreeCubeScene {
         this.scene.add(this.axesHelper);
     }
 
+    #addAxisLabels() {
+        const axisLabelDistance = AXIS_HELPER_SIZE + AXIS_LABEL_OFFSET;
+        const axisLabels = [
+            { text: 'x', color: 'red', position: [axisLabelDistance, 0, 0] },
+            { text: 'y', color: 'green', position: [0, axisLabelDistance, 0] },
+            { text: 'z', color: 'blue', position: [0, 0, axisLabelDistance] }
+        ];
+
+        this.axisLabels = axisLabels.map(({ text, color, position }) => {
+            const labelSprite = this.#createAxisLabelSprite(text, color);
+            labelSprite.position.set(position[0], position[1], position[2]);
+            labelSprite.userData.axisLabel = text;
+            this.scene.add(labelSprite);
+            return labelSprite;
+        });
+    }
+
+    #createAxisLabelSprite(text, color) {
+        const labelCanvas = document.createElement('canvas');
+        labelCanvas.width = AXIS_LABEL_CANVAS_SIZE;
+        labelCanvas.height = AXIS_LABEL_CANVAS_SIZE;
+
+        const context = labelCanvas.getContext('2d');
+        if (context) {
+            context.clearRect(0, 0, AXIS_LABEL_CANVAS_SIZE, AXIS_LABEL_CANVAS_SIZE);
+            context.font = '72px Arial';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = color;
+            context.fillText(text, AXIS_LABEL_CANVAS_SIZE / 2, AXIS_LABEL_CANVAS_SIZE / 2);
+        }
+
+        const texture = new this.three.CanvasTexture(labelCanvas);
+        texture.needsUpdate = true;
+        const material = new this.three.SpriteMaterial({
+            map: texture,
+            transparent: true
+        });
+        const labelSprite = new this.three.Sprite(material);
+        labelSprite.scale.set(AXIS_LABEL_SCALE, AXIS_LABEL_SCALE, AXIS_LABEL_SCALE);
+        return labelSprite;
+    }
+
     #resolveCanvasSize() {
         const rect = this.canvas.getBoundingClientRect();
         return {
@@ -268,9 +351,14 @@ export class ThreeCubeScene {
 function disposeObject3D(object3D) {
     object3D.geometry?.dispose?.();
     if (Array.isArray(object3D.material)) {
-        object3D.material.forEach((material) => material?.dispose?.());
+        object3D.material.forEach((material) => disposeMaterial(material));
         return;
     }
 
-    object3D.material?.dispose?.();
+    disposeMaterial(object3D.material);
+}
+
+function disposeMaterial(material) {
+    material?.map?.dispose?.();
+    material?.dispose?.();
 }

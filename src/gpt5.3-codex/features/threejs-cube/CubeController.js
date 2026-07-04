@@ -1,4 +1,7 @@
 import {
+    DEFAULT_CUBE_SCALE,
+    DEFAULT_ROTATION_AXIS,
+    DEFAULT_ROTATION_SPEED,
     createInitialCubeState,
     isValidFaceIndex,
     isValidRotationAxis
@@ -15,10 +18,6 @@ export class CubeController {
     }
 
     createCubeAtPointer(event) {
-        if (this.state.hasCube) {
-            return false;
-        }
-
         const hasCreatedCube = this.scene.createCubeAtPointer(event, {
             faceColors: this.state.faceColors
         });
@@ -75,5 +74,20 @@ export class CubeController {
         this.state.faceColors[faceIndex] = color;
         this.scene.setFaceColor(faceIndex, color);
         return true;
+    }
+
+    resetCubeTransform() {
+        if (!this.state.hasCube) {
+            return false;
+        }
+
+        this.state.scale = DEFAULT_CUBE_SCALE;
+        this.state.rotationAxis = DEFAULT_ROTATION_AXIS;
+        this.state.rotationSpeed = DEFAULT_ROTATION_SPEED;
+        return this.scene.resetCubeTransform({
+            scale: this.state.scale,
+            rotationAxis: this.state.rotationAxis,
+            rotationSpeed: this.state.rotationSpeed
+        });
     }
 }

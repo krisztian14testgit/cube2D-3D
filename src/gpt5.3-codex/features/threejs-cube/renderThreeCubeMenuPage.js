@@ -14,6 +14,7 @@ export const THREE_CUBE_MENU_IDS = Object.freeze({
     scale: 'three-cube-scale',
     rotationAxis: 'three-cube-rotation-axis',
     rotationSpeed: 'three-cube-rotation-speed',
+    reset: 'three-cube-reset',
     faceColors: Object.freeze(
         Array.from({ length: FACE_COUNT }, (_, index) => `three-cube-face-${index}`)
     )
@@ -70,11 +71,22 @@ export function initializeThreeCubeMenuInteractions(
         controller.setFaceColor(Number(event.target.dataset.faceIndex), event.target.value);
     };
 
+    const handleResetClick = () => {
+        if (!controller.resetCubeTransform()) {
+            return;
+        }
+
+        elements.scaleInput.value = String(DEFAULT_CUBE_SCALE);
+        elements.rotationAxisSelect.value = DEFAULT_ROTATION_AXIS;
+        elements.rotationSpeedInput.value = String(DEFAULT_ROTATION_SPEED);
+    };
+
     elements.canvas.addEventListener('click', handleCubeCreationRequest);
     elements.canvas.addEventListener('contextmenu', handleCanvasContextMenu);
     elements.scaleInput.addEventListener('input', handleScaleInput);
     elements.rotationAxisSelect.addEventListener('change', handleRotationAxisChange);
     elements.rotationSpeedInput.addEventListener('input', handleRotationSpeedInput);
+    elements.resetButton.addEventListener('click', handleResetClick);
     elements.faceColorInputs.forEach((input) => {
         input.addEventListener('input', handleFaceColorInput);
     });
@@ -90,6 +102,7 @@ export function initializeThreeCubeMenuInteractions(
             elements.scaleInput.removeEventListener('input', handleScaleInput);
             elements.rotationAxisSelect.removeEventListener('change', handleRotationAxisChange);
             elements.rotationSpeedInput.removeEventListener('input', handleRotationSpeedInput);
+            elements.resetButton.removeEventListener('click', handleResetClick);
             elements.faceColorInputs.forEach((input) => {
                 input.removeEventListener('input', handleFaceColorInput);
             });
@@ -141,6 +154,7 @@ export function createThreeCubeMenuMarkup({ title }) {
                             disabled
                         >
                     </div>
+                    <button id="${THREE_CUBE_MENU_IDS.reset}" type="button" disabled>Reset</button>
                     <fieldset>
                         <legend>Face colors</legend>
                         ${createFaceColorInputsMarkup()}
@@ -178,6 +192,7 @@ function getRequiredDomElements(container) {
         `#${THREE_CUBE_MENU_IDS.rotationSpeed}`,
         'rotation speed'
     );
+    const resetButton = getRequiredElement(container, `#${THREE_CUBE_MENU_IDS.reset}`, 'reset');
     const faceColorInputs = THREE_CUBE_MENU_IDS.faceColors.map((id, index) => getRequiredElement(
         container,
         `#${id}`,
@@ -190,6 +205,7 @@ function getRequiredDomElements(container) {
         scaleInput,
         rotationAxisSelect,
         rotationSpeedInput,
+        resetButton,
         faceColorInputs
     };
 }
@@ -207,6 +223,7 @@ function setControlsDisabled(elements, isDisabled) {
     elements.scaleInput.disabled = isDisabled;
     elements.rotationAxisSelect.disabled = isDisabled;
     elements.rotationSpeedInput.disabled = isDisabled;
+    elements.resetButton.disabled = isDisabled;
     elements.faceColorInputs.forEach((input) => {
         input.disabled = isDisabled;
     });

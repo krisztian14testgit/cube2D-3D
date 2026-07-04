@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+    DEFAULT_CUBE_SCALE,
+    DEFAULT_ROTATION_AXIS,
+    DEFAULT_ROTATION_SPEED
+} from './CubeState.js';
+import {
     renderThreeCubeMenuPage,
     THREE_CUBE_MENU_IDS
 } from './renderThreeCubeMenuPage.js';
@@ -24,6 +29,7 @@ class FakeController {
         this.setScale = vi.fn();
         this.setRotationAxis = vi.fn();
         this.setRotationSpeed = vi.fn();
+        this.resetCubeTransform = vi.fn(() => true);
         this.setFaceColor = vi.fn();
         FakeController.instances.push(this);
     }
@@ -35,6 +41,7 @@ function getControlElements(container) {
         scaleInput: container.querySelector(`#${THREE_CUBE_MENU_IDS.scale}`),
         rotationAxisSelect: container.querySelector(`#${THREE_CUBE_MENU_IDS.rotationAxis}`),
         rotationSpeedInput: container.querySelector(`#${THREE_CUBE_MENU_IDS.rotationSpeed}`),
+        resetButton: container.querySelector(`#${THREE_CUBE_MENU_IDS.reset}`),
         firstFaceColorInput: container.querySelector(`#${THREE_CUBE_MENU_IDS.faceColors[0]}`)
     };
 }
@@ -62,6 +69,7 @@ describe('renderThreeCubeMenuPage', () => {
         expect(controls.scaleInput.disabled).toBe(true);
         expect(controls.rotationAxisSelect.disabled).toBe(true);
         expect(controls.rotationSpeedInput.disabled).toBe(true);
+        expect(controls.resetButton.disabled).toBe(true);
         expect(controls.firstFaceColorInput.disabled).toBe(true);
     });
 
@@ -84,6 +92,7 @@ describe('renderThreeCubeMenuPage', () => {
         expect(controls.scaleInput.disabled).toBe(false);
         expect(controls.rotationAxisSelect.disabled).toBe(false);
         expect(controls.rotationSpeedInput.disabled).toBe(false);
+        expect(controls.resetButton.disabled).toBe(false);
         expect(controls.firstFaceColorInput.disabled).toBe(false);
     });
 
@@ -147,6 +156,12 @@ describe('renderThreeCubeMenuPage', () => {
         expect(controller.setRotationAxis).toHaveBeenCalledWith('z');
         expect(controller.setRotationSpeed).toHaveBeenCalledWith(0.12);
         expect(controller.setFaceColor).toHaveBeenCalledWith(0, '#000000');
+
+        controls.resetButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(controller.resetCubeTransform).toHaveBeenCalledTimes(1);
+        expect(controls.scaleInput.value).toBe(String(DEFAULT_CUBE_SCALE));
+        expect(controls.rotationAxisSelect.value).toBe(DEFAULT_ROTATION_AXIS);
+        expect(controls.rotationSpeedInput.value).toBe(String(DEFAULT_ROTATION_SPEED));
 
         page.dispose();
         expect(scene.dispose).toHaveBeenCalledTimes(1);
