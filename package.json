@@ -25,5 +25,10 @@
     "jsdom": "^29.1.1",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.17.0",
+    "@babylonjs/gui": "^9.17.0",
+    "three": "^0.158.0"
   }
 }
