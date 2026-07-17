@@ -2,13 +2,15 @@ import { renderMenu1 } from '../pages/menu1.js';
 import { renderMenu2 } from '../pages/menu2.js';
 import { renderMenu3 } from '../pages/menu3.js';
 import { renderMenu4 } from '../pages/menu4.js';
+import { renderMenu6 } from '../pages/menu6.js';
 
 const DEFAULT_ROUTE = 'menu1';
 const ROUTES = Object.freeze({
     menu1: renderMenu1,
     menu2: renderMenu2,
     menu3: renderMenu3,
-    menu4: renderMenu4
+    menu4: renderMenu4,
+    menu6: renderMenu6
 });
 
 export class Menu {
@@ -27,6 +29,7 @@ export class Menu {
                     <li><a href="#menu2" data-route="menu2">Gemini 3.1 pro</a></li>
                     <li><a href="#menu3" data-route="menu3">Claude Sonnet 4.6</a></li>
                     <li><a href="#menu4" data-route="menu4">Menu 4</a></li>
+                    <li><a href="#menu6" data-route="menu6">GPT5.3-codex - 3D cube</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>
             </nav>
