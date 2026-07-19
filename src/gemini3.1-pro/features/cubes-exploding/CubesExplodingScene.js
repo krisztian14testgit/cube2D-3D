@@ -211,7 +211,10 @@ export class CubesExplodingScene {
             // Bounce off sphere boundary
             const distance = cube.position.length();
             if (distance > sphereRadius - 1) { // rough collision with boundary
-                cube.velocity.negate();
+                // Ensure the cube is moving outwards before negating velocity to prevent it from getting stuck
+                if (cube.position.dot(cube.velocity) > 0) {
+                    cube.velocity.negate();
+                }
             }
         }
     }
