@@ -1,9 +1,10 @@
 export function renderThreejsCubePage(container) {
     container.innerHTML = `
         <div style="display: flex; flex-direction: column; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px;">
+            <h2 style="padding: 10px 20px; margin: 0;">Drawing a 3D Cube</h2>
             <div id="threejs-cube-container" style="display: flex; min-height: 500px; border: 1px solid #ccc; width: 100%; margin-bottom: 20px;">
                 <div id="controls-panel" style="width: 300px; padding: 20px; background: #f5f5f5; border-right: 1px solid #ddd; overflow-y: auto;">
-                    <h3>Cube Controls</h3>
+                    <h3>3DCube Controls with 3D coordinate system</h3>
                     
                     <div class="control-group" style="margin-bottom: 15px;">
                         <label>Scale</label><br/>
@@ -39,7 +40,7 @@ export function renderThreejsCubePage(container) {
             
             <div id="cubes-exploding-container" style="display: flex; min-height: 500px; border: 1px solid #ccc; width: 100%;">
                 <div id="exploding-controls-panel" style="width: 300px; padding: 20px; background: #f5f5f5; border-right: 1px solid #ddd; overflow-y: auto;">
-                    <h3>Exploding Cubes Controls</h3>
+                    <h3>Exploding 3D Cubes in a 3D Sphere</h3>
                     
                     <div class="control-group" style="margin-bottom: 15px;">
                         <label>Sphere Scale</label><br/>
