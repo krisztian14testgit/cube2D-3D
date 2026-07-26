@@ -3,6 +3,7 @@ import { renderMenu2 } from '../pages/menu2.js';
 import { renderMenu3 } from '../pages/menu3.js';
 import { renderMenu4 } from '../pages/menu4.js';
 import { renderThreejsCubePage } from '../gemini3.1-pro/features/threejs-cube/renderThreejsCubePage.js';
+import { renderMenu6 } from '../pages/menu6.js';
 
 const DEFAULT_ROUTE = 'menu1';
 const ROUTES = Object.freeze({
@@ -10,7 +11,8 @@ const ROUTES = Object.freeze({
     menu2: renderMenu2,
     menu3: renderMenu3,
     menu4: renderMenu4,
-    menu5: renderThreejsCubePage
+    menu5: renderThreejsCubePage,
+    menu6: renderMenu6
 });
 
 export class Menu {
@@ -30,6 +32,7 @@ export class Menu {
                     <li><a href="#menu3" data-route="menu3">Claude Sonnet 4.6</a></li>
                     <li><a href="#menu4" data-route="menu4">Menu 4</a></li>
                     <li><a href="#menu5" data-route="menu5">Gemini3.1-pro - 3D cube</a></li>
+                    <li><a href="#menu6" data-route="menu6">GPT5.3-codex - 3D cube</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>
             </nav>
