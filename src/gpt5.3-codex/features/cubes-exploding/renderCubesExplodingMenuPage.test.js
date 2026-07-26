@@ -53,4 +53,15 @@ describe('renderCubesExplodingMenuPage', () => {
         expect(initializeSpy).toHaveBeenCalledTimes(1);
         expect(bindControlsSpy).toHaveBeenCalledWith(root);
     });
+
+    it('returns null when canvas cannot be found', () => {
+        const fakeContainer = {
+            innerHTML: '',
+            querySelector: vi.fn(() => null)
+        };
+
+        const scene = renderCubesExplodingMenuPage(fakeContainer);
+        expect(scene).toBeNull();
+        expect(initializeSpy).not.toHaveBeenCalled();
+    });
 });

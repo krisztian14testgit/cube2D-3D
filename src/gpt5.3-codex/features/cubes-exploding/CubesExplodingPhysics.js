@@ -5,7 +5,7 @@ const MAX_CUBE_SCALE = 5;
 const MAX_LINEAR_SPEED = 0.08;
 const MAX_ROTATION_SPEED = 0.03;
 
-function randomBetween(min, max, random = Math.random) {
+function randomInRange(min, max, random = Math.random) {
     return min + (max - min) * random();
 }
 
@@ -18,20 +18,20 @@ export function clampMaxCubeCount(value, min = MIN_MAX_CUBES, max = MAX_MAX_CUBE
 }
 
 export function createRandomCubeState(spawnPoint, random = Math.random) {
-    const scale = randomBetween(MIN_CUBE_SCALE, MAX_CUBE_SCALE, random);
+    const scale = randomInRange(MIN_CUBE_SCALE, MAX_CUBE_SCALE, random);
 
     return {
         spawnPoint,
         scale,
         velocity: {
-            x: randomBetween(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random),
-            y: randomBetween(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random),
-            z: randomBetween(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random)
+            x: randomInRange(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random),
+            y: randomInRange(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random),
+            z: randomInRange(-MAX_LINEAR_SPEED, MAX_LINEAR_SPEED, random)
         },
         rotationVelocity: {
-            x: randomBetween(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random),
-            y: randomBetween(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random),
-            z: randomBetween(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random)
+            x: randomInRange(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random),
+            y: randomInRange(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random),
+            z: randomInRange(-MAX_ROTATION_SPEED, MAX_ROTATION_SPEED, random)
         }
     };
 }

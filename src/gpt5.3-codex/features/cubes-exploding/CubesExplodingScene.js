@@ -42,6 +42,7 @@ export class CubesExplodingScene {
         this.maxCubes = DEFAULT_MAX_CUBES;
         this.cubes = [];
         this.nextCubeId = 0;
+        this.nextExplosionId = 0;
 
         this.#handlePointerDown = this.#handlePointerDown.bind(this);
         this.#handleResize = this.#handleResize.bind(this);
@@ -226,18 +227,27 @@ export class CubesExplodingScene {
         const collisionIndexes = collectCollisionIndexes(this.cubes.map((cube) => ({
             position: cube.position,
             collisionRadius: cube.metadata.collisionRadius
-        })));
+        }))).sort((a, b) => b - a);
 
-        collisionIndexes.forEach((index) => {
+        for (let idx = 0; idx < collisionIndexes.length; idx += 1) {
+            const index = collisionIndexes[idx];
+            if (index < 0 || index >= this.cubes.length) {
+                continue;
+            }
             const cube = this.cubes[index];
             this.#playExplosion(cube.position.clone());
             cube.dispose();
             this.cubes.splice(index, 1);
-        });
+        }
     }
 
     #playExplosion(position) {
-        const particleSystem = new ParticleSystem(`cube-explosion-${Date.now()}`, 120, this.scene);
+        const particleSystem = new ParticleSystem(
+            `cube-explosion-${this.nextExplosionId}`,
+            120,
+            this.scene
+        );
+        this.nextExplosionId += 1;
         particleSystem.particleTexture = new Texture(EXPLOSION_TEXTURE_BASE64, this.scene);
         particleSystem.emitter = position;
         particleSystem.minEmitBox = new Vector3(-0.2, -0.2, -0.2);
@@ -259,10 +269,11 @@ export class CubesExplodingScene {
         particleSystem.updateSpeed = 0.01;
         particleSystem.targetStopDuration = 0.12;
         particleSystem.start();
+        const disposalDelayMs = (particleSystem.targetStopDuration + particleSystem.maxLifeTime) * 1000 + 50;
 
         setTimeout(() => {
             particleSystem.dispose();
-        }, 450);
+        }, disposalDelayMs);
     }
 
     #handleResize() {

@@ -3,12 +3,12 @@ import { CUBES_EXPLODING_DEFAULTS, CubesExplodingScene } from './CubesExplodingS
 export function createCubesExplodingMarkup() {
     return `
         <div style="display: flex; flex-direction: column; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px;">
-            <h2 style="padding: 10px 20px; margin: 0;">Step 4 - GPT-5.3-Codex 3D Cube</h2>
+            <h2 style="padding: 10px 20px; margin: 0;">GPT-5.3-Codex - 3D Cubes</h2>
             <p style="padding: 0 20px; margin-top: 0;">BabylonJS sphere boundary with exploding cubes interaction.</p>
 
             <hr style="border: 1px solid #ccc; width: 100%;" />
 
-            <h2 style="padding: 10px 20px; margin: 0;">Step 5 - Exploding Cubes in Sphere Boundary</h2>
+            <h2 style="padding: 10px 20px; margin: 0;">Exploding Cubes in Sphere Boundary</h2>
             <div id="gpt-cubes-exploding-container" style="display: flex; min-height: 500px; border: 1px solid #ccc; width: 100%;">
                 <div style="width: 300px; padding: 20px; background: #f5f5f5; border-right: 1px solid #ddd; overflow-y: auto;">
                     <h3>Control Panel</h3>
