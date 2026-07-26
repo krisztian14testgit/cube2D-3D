@@ -18,6 +18,7 @@ Programmer just checks the generated codes part and validate them.
 - Default lang: vanillaJs + html canvas
 - Libraires:
     - BabylonJs
+    - Threejs
     - Vite build tool
 - It will be written by Python: 
     - v3.x
