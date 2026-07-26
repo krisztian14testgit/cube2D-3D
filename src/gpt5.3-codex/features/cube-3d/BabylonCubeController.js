@@ -41,6 +41,8 @@ function drawCoordinateAxes(scene, axisLength) {
 }
 
 export class BabylonCubeController {
+    #resizeHandler;
+
     constructor(canvas, {
         rotationAxis = DEFAULT_ROTATION_AXIS,
         rotationSpeed = DEFAULT_ROTATION_SPEED,
@@ -57,7 +59,7 @@ export class BabylonCubeController {
         this.scene = null;
         this.cube = null;
         this.cubeMaterial = null;
-        this.#handleResize = this.#handleResize.bind(this);
+        this.#resizeHandler = this.#handleResize.bind(this);
     }
 
     init() {
@@ -102,7 +104,7 @@ export class BabylonCubeController {
         this.engine.runRenderLoop(() => {
             this.scene.render();
         });
-        window.addEventListener('resize', this.#handleResize);
+        window.addEventListener('resize', this.#resizeHandler);
     }
 
     createCubeIfMissing() {
@@ -143,7 +145,7 @@ export class BabylonCubeController {
     }
 
     dispose() {
-        window.removeEventListener('resize', this.#handleResize);
+        window.removeEventListener('resize', this.#resizeHandler);
         this.engine?.dispose();
     }
 
