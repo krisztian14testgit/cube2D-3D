@@ -18,8 +18,8 @@ import { renderMenu6 } from './menu6.js';
 describe('renderMenu6', () => {
     beforeEach(() => {
         document.body.innerHTML = '<div id="root"></div>';
-        cubeCleanupSpy.mockClear();
-        explodingDisposeSpy.mockClear();
+        cubeCleanupSpy.mockReset();
+        explodingDisposeSpy.mockReset();
         render3DCubePageSpy.mockReset().mockReturnValue({ cleanup: cubeCleanupSpy });
         renderCubesExplodingMenuPageSpy.mockReset().mockReturnValue({ dispose: explodingDisposeSpy });
     });
@@ -28,10 +28,12 @@ describe('renderMenu6', () => {
         const root = document.getElementById('root');
 
         const result = renderMenu6(root);
+        const sections = root.querySelectorAll('section');
 
         expect(render3DCubePageSpy).toHaveBeenCalledTimes(1);
         expect(renderCubesExplodingMenuPageSpy).toHaveBeenCalledTimes(1);
-        expect(root.querySelectorAll('section').length).toBe(2);
+        expect(sections.length).toBe(2);
+        expect(sections[1].style.borderTop).toBe('1px solid rgb(204, 204, 204)');
         expect(result.cubeFeature).toBeTruthy();
         expect(result.explodingFeature).toBeTruthy();
     });
