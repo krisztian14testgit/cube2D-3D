@@ -43,9 +43,13 @@ export class CubesExplodingScene {
         this.cubes = [];
         this.nextCubeId = 0;
         this.nextExplosionId = 0;
+        this.explosionTimeoutIds = new Set();
+        this.pointerObserver = null;
+        this.beforeRenderObserver = null;
 
         this.#handlePointerDown = this.#handlePointerDown.bind(this);
         this.#handleResize = this.#handleResize.bind(this);
+        this.#handleContextMenu = this.#handleContextMenu.bind(this);
     }
 
     initialize() {
@@ -66,14 +70,17 @@ export class CubesExplodingScene {
             this.camera.inputs.attached.pointers.buttons = [2];
         }
 
-        this.canvas.addEventListener('contextmenu', (event) => event.preventDefault());
+        this.canvas.addEventListener('contextmenu', this.#handleContextMenu);
 
         new HemisphericLight('light', new Vector3(0, 1, 0), this.scene);
 
         this.#createSphereBoundary(DEFAULT_SPHERE_SCALE);
 
-        this.scene.onPointerObservable.add(this.#handlePointerDown, PointerEventTypes.POINTERDOWN);
-        this.scene.onBeforeRenderObservable.add(() => {
+        this.pointerObserver = this.scene.onPointerObservable.add(
+            this.#handlePointerDown,
+            PointerEventTypes.POINTERDOWN
+        );
+        this.beforeRenderObserver = this.scene.onBeforeRenderObservable.add(() => {
             this.#updateCubes();
             this.#explodeCollidingCubes();
         });
@@ -146,7 +153,14 @@ export class CubesExplodingScene {
 
     dispose() {
         if (this.scene) {
-            this.scene.onPointerObservable.removeCallback(this.#handlePointerDown);
+            if (this.pointerObserver) {
+                this.scene.onPointerObservable.remove(this.pointerObserver);
+                this.pointerObserver = null;
+            }
+            if (this.beforeRenderObserver) {
+                this.scene.onBeforeRenderObservable.remove(this.beforeRenderObserver);
+                this.beforeRenderObserver = null;
+            }
             this.scene.dispose();
         }
         if (this.engine) {
@@ -154,6 +168,9 @@ export class CubesExplodingScene {
         }
 
         window.removeEventListener('resize', this.#handleResize);
+        this.canvas?.removeEventListener('contextmenu', this.#handleContextMenu);
+        this.explosionTimeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+        this.explosionTimeoutIds.clear();
     }
 
     #createSphereBoundary(scale) {
@@ -271,9 +288,15 @@ export class CubesExplodingScene {
         particleSystem.start();
         const disposalDelayMs = (particleSystem.targetStopDuration + particleSystem.maxLifeTime) * 1000 + 50;
 
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
+            this.explosionTimeoutIds.delete(timeoutId);
             particleSystem.dispose();
         }, disposalDelayMs);
+        this.explosionTimeoutIds.add(timeoutId);
+    }
+
+    #handleContextMenu(event) {
+        event.preventDefault();
     }
 
     #handleResize() {
