@@ -1,4 +1,4 @@
-import * as BABYLON from 'babylonjs';
+import * as BABYLON from '@babylonjs/core';
 
 const DEFAULT_AXIS_LENGTH = 4;
 const DEFAULT_ROTATION_AXIS = 'y';
