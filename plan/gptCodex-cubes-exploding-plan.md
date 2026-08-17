@@ -50,3 +50,12 @@ Add a BabylonJS-based 3D feature under **"GPT5.3-codex - 3D cube"** where cubes 
 - Add UI markup test coverage for required controls/menu content.
 - Run `npm run build` and `npm test`.
 - Update package version to `1.5.1`.
+
+## Technical stacks:
+- Follow the clean code and SOLID coding style.
+- The logic will be clear and followable of that new feature.
+- ESMA Script 2022 version or latest
+
+## Extra notes:
+- Dont look at gemini3.1-pro/features
+- Only you can use gpt5.3-codex/features files, you can work here.
