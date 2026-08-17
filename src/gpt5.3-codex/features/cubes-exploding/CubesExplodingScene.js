@@ -31,6 +31,10 @@ function toVector3(values) {
 }
 
 export class CubesExplodingScene {
+    #onPointerDown = (pointerInfo) => this.#handlePointerDown(pointerInfo);
+    #onResize = () => this.#handleResize();
+    #onContextMenu = (event) => this.#handleContextMenu(event);
+
     constructor(canvas) {
         this.canvas = canvas;
         this.engine = null;
@@ -46,9 +50,6 @@ export class CubesExplodingScene {
         this.explosionTimeoutIds = new Set();
         this.pointerObserver = null;
         this.beforeRenderObserver = null;
-        this.onPointerDown = (pointerInfo) => this.#handlePointerDown(pointerInfo);
-        this.onResize = () => this.#handleResize();
-        this.onContextMenu = (event) => this.#handleContextMenu(event);
     }
 
     initialize() {
@@ -69,14 +70,14 @@ export class CubesExplodingScene {
             this.camera.inputs.attached.pointers.buttons = [2];
         }
 
-        this.canvas.addEventListener('contextmenu', this.onContextMenu);
+        this.canvas.addEventListener('contextmenu', this.#onContextMenu);
 
         new HemisphericLight('light', new Vector3(0, 1, 0), this.scene);
 
         this.#createSphereBoundary(DEFAULT_SPHERE_SCALE);
 
         this.pointerObserver = this.scene.onPointerObservable.add(
-            this.onPointerDown,
+            this.#onPointerDown,
             PointerEventTypes.POINTERDOWN
         );
         this.beforeRenderObserver = this.scene.onBeforeRenderObservable.add(() => {
@@ -84,7 +85,7 @@ export class CubesExplodingScene {
             this.#explodeCollidingCubes();
         });
 
-        window.addEventListener('resize', this.onResize);
+        window.addEventListener('resize', this.#onResize);
 
         this.engine.runRenderLoop(() => {
             this.scene.render();
@@ -166,8 +167,8 @@ export class CubesExplodingScene {
             this.engine.dispose();
         }
 
-        window.removeEventListener('resize', this.onResize);
-        this.canvas?.removeEventListener('contextmenu', this.onContextMenu);
+        window.removeEventListener('resize', this.#onResize);
+        this.canvas?.removeEventListener('contextmenu', this.#onContextMenu);
         this.explosionTimeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
         this.explosionTimeoutIds.clear();
     }
