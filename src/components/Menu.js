@@ -2,7 +2,7 @@ import { renderMenu1 } from '../pages/menu1.js';
 import { renderMenu2 } from '../pages/menu2.js';
 import { renderMenu3 } from '../pages/menu3.js';
 import { renderMenu4 } from '../pages/menu4.js';
-import { renderThreejsCubePage } from '../gemini3.1-pro/features/threejs-cube/renderThreejsCubePage.js';
+import { renderMenu5 } from '../pages/menu5.js';
 import { renderMenu6 } from '../pages/menu6.js';
 
 const DEFAULT_ROUTE = 'menu1';
@@ -11,7 +11,7 @@ const ROUTES = Object.freeze({
     menu2: renderMenu2,
     menu3: renderMenu3,
     menu4: renderMenu4,
-    menu5: renderThreejsCubePage,
+    menu5: renderMenu5,
     menu6: renderMenu6
 });
 
