@@ -43,7 +43,10 @@ export function collectCollisionIndexes(cubes) {
         for (let j = i + 1; j < cubes.length; j += 1) {
             const cubeA = cubes[i];
             const cubeB = cubes[j];
-            const collisionDistance = cubeA.position.distanceTo(cubeB.position);
+            const deltaX = cubeA.position.x - cubeB.position.x;
+            const deltaY = cubeA.position.y - cubeB.position.y;
+            const deltaZ = cubeA.position.z - cubeB.position.z;
+            const collisionDistance = Math.hypot(deltaX, deltaY, deltaZ);
             const minDistance = cubeA.collisionRadius + cubeB.collisionRadius;
 
             if (collisionDistance <= minDistance) {

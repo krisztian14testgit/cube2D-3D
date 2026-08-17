@@ -19,7 +19,7 @@ vi.mock('@babylonjs/core', () => {
     };
 });
 
-import { CubesExplodingScene } from './CubesExplodingScene.js';
+import { CUBES_EXPLODING_DEFAULTS, CubesExplodingScene } from './CubesExplodingScene.js';
 
 describe('CubesExplodingScene', () => {
     it('constructs without private callback assignment errors', () => {
@@ -29,5 +29,9 @@ describe('CubesExplodingScene', () => {
         };
 
         expect(() => new CubesExplodingScene(canvas)).not.toThrow();
+    });
+
+    it('exposes default sphere scale as 15', () => {
+        expect(CUBES_EXPLODING_DEFAULTS.sphereScale).toBe(15);
     });
 });

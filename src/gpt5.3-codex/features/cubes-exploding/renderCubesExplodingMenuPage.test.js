@@ -5,8 +5,11 @@ const bindControlsSpy = vi.fn();
 
 vi.mock('./CubesExplodingScene.js', () => ({
     CUBES_EXPLODING_DEFAULTS: {
-        sphereScale: 8,
+        sphereScale: 15,
         maxCubes: 10,
+        cameraRotationSpeed: 1,
+        minCameraRotationSpeed: 0.4,
+        maxCameraRotationSpeed: 3,
         minMaxCubes: 10,
         maxMaxCubes: 100
     },
@@ -42,6 +45,7 @@ describe('renderCubesExplodingMenuPage', () => {
 
         expect(markup).toContain('Sphere Scale');
         expect(markup).toContain('Max Cubes (10 - 100)');
+        expect(markup).toContain('Camera Rotation Speed');
         expect(markup).toContain('gpt-cubes-render-canvas');
     });
 

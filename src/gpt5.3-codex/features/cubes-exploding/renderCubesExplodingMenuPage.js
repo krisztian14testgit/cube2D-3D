@@ -17,6 +17,11 @@ export function createCubesExplodingMarkup() {
                         <input type="number" id="gpt-cubes-max-cubes" min="${CUBES_EXPLODING_DEFAULTS.minMaxCubes}" max="${CUBES_EXPLODING_DEFAULTS.maxMaxCubes}" value="${CUBES_EXPLODING_DEFAULTS.maxCubes}" style="width: 100%">
                     </div>
                     <div class="control-group" style="margin-bottom: 15px;">
+                        <label for="gpt-cubes-camera-rotation-speed">Camera Rotation Speed</label><br/>
+                        <input type="range" id="gpt-cubes-camera-rotation-speed" min="${CUBES_EXPLODING_DEFAULTS.minCameraRotationSpeed}" max="${CUBES_EXPLODING_DEFAULTS.maxCameraRotationSpeed}" step="0.1" value="${CUBES_EXPLODING_DEFAULTS.cameraRotationSpeed}" style="width: 100%">
+                        <span id="gpt-cubes-camera-rotation-speed-val">${CUBES_EXPLODING_DEFAULTS.cameraRotationSpeed.toFixed(1)}</span>
+                    </div>
+                    <div class="control-group" style="margin-bottom: 15px;">
                         <small>Left click inside sphere to spawn a cube (random scale 1-5).</small><br/>
                         <small>Right click + drag to rotate camera, mouse wheel to zoom.</small>
                     </div>
