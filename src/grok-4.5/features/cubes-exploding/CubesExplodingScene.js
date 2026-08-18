@@ -176,7 +176,7 @@ export class CubesExplodingScene {
         cubeMaterial.diffuseColor = new Color3(Math.random(), Math.random(), Math.random());
         cube.material = cubeMaterial;
 
-        cube.position = state.spawnPoint.clone().scaleInPlace(0.9);
+        cube.position = state.spawnPoint.clone().scale(0.9);
 
         cube.metadata = {
             id: this.nextCubeId,
@@ -282,7 +282,7 @@ export class CubesExplodingScene {
         const collisionIndexes = collectCollisionIndexes(this.cubes.map((cube) => ({
             position: cube.position,
             collisionRadius: cube.metadata.collisionRadius
-        }))).sort((a, b) => b - a);
+        })));
 
         for (let idx = 0; idx < collisionIndexes.length; idx += 1) {
             const index = collisionIndexes[idx];
