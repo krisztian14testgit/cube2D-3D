@@ -34,9 +34,13 @@ describe('Menu', () => {
         menu.render();
 
         const menu7Link = nav.querySelector('a[data-route="menu7"]');
+        const initialRenderCalls = Object.values(pageRenderers)
+            .reduce((total, renderer) => total + renderer.mock.calls.length, 0);
+
         expect(menu7Link).toBeTruthy();
         expect(menu7Link.textContent).toBe('Grok4.5 - 3D cube');
-        expect(pageRenderers.menu4).toHaveBeenCalledTimes(1);
+        expect(initialRenderCalls).toBe(1);
+        expect(pageRenderers.menu7).not.toHaveBeenCalled();
 
         menu7Link.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
