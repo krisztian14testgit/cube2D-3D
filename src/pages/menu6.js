@@ -21,7 +21,8 @@ export function renderMenu6(container) {
         rotationSpeedId: 'cube-rotation-speed-menu6',
         cubeColorId: 'cube-color-menu6',
         controlPanelId: 'cube-controls-menu6',
-        statusId: 'cube-status-menu6'
+        statusId: 'cube-status-menu6',
+        createdBy: 'GPT5.3-codex'
     });
 
     const explodingFeature = renderCubesExplodingMenuPage(explodingSection);

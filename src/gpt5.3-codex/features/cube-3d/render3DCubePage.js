@@ -13,9 +13,11 @@ export function create3DCubeMarkup({
     rotationSpeedId,
     cubeColorId,
     controlPanelId,
-    statusId
+    statusId,
+    createdBy
 }) {
     return `
+        <p><i>Created by ${createdBy}</i></p>
         <h2>${title}</h2>
         <p>Click inside the 3D coordinate system to draw the cube, then use the controls.</p>
         <div class="canvas-container">
@@ -131,6 +133,7 @@ export function render3DCubePage(container, {
     cubeColorId = 'cube-color-menu6',
     controlPanelId = 'cube-controls-menu6',
     statusId = 'cube-status-menu6',
+    createdBy = 'GPT5.3-codex',
     controllerFactory = createBabylonCubeController
 } = {}) {
     container.innerHTML = create3DCubeMarkup({
@@ -141,7 +144,8 @@ export function render3DCubePage(container, {
         rotationSpeedId,
         cubeColorId,
         controlPanelId,
-        statusId
+        statusId,
+        createdBy
     });
 
     return initialize3DCubeInteractions(container, {
