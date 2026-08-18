@@ -20,8 +20,11 @@ import {
     shouldBounceFromBoundary
 } from './CubesExplodingPhysics.js';
 
-const DEFAULT_SPHERE_SCALE = 8;
+const DEFAULT_SPHERE_SCALE = 15;
 const DEFAULT_MAX_CUBES = 10;
+const DEFAULT_CAMERA_ROTATION_SPEED = 1;
+const MIN_CAMERA_ROTATION_SPEED = 0.4;
+const MAX_CAMERA_ROTATION_SPEED = 3;
 const BASE_SPHERE_RADIUS = 1;
 const EXPLOSION_TEXTURE_BASE64 =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wzxub8AAAAASUVORK5CYII=';
@@ -31,6 +34,10 @@ function toVector3(values) {
 }
 
 export class CubesExplodingScene {
+    #onPointerDown = (pointerInfo) => this.#handlePointerDown(pointerInfo);
+    #onResize = () => this.#handleResize();
+    #onContextMenu = (event) => this.#handleContextMenu(event);
+
     constructor(canvas) {
         this.canvas = canvas;
         this.engine = null;
@@ -39,6 +46,7 @@ export class CubesExplodingScene {
         this.surfaceSphere = null;
         this.borderSphere = null;
         this.boundaryRadius = DEFAULT_SPHERE_SCALE;
+        this.cameraRotationSpeed = DEFAULT_CAMERA_ROTATION_SPEED;
         this.maxCubes = DEFAULT_MAX_CUBES;
         this.cubes = [];
         this.nextCubeId = 0;
@@ -46,10 +54,6 @@ export class CubesExplodingScene {
         this.explosionTimeoutIds = new Set();
         this.pointerObserver = null;
         this.beforeRenderObserver = null;
-
-        this.#handlePointerDown = this.#handlePointerDown.bind(this);
-        this.#handleResize = this.#handleResize.bind(this);
-        this.#handleContextMenu = this.#handleContextMenu.bind(this);
     }
 
     initialize() {
@@ -64,20 +68,27 @@ export class CubesExplodingScene {
         this.camera = new ArcRotateCamera('camera', 0, 1.2, 30, Vector3.Zero(), this.scene);
         this.camera.lowerRadiusLimit = 8;
         this.camera.upperRadiusLimit = 120;
-        this.camera.wheelPrecision = 20;
-        this.camera.attachControl(this.canvas, true);
+        this.camera.lowerBetaLimit = null;
+        this.camera.upperBetaLimit = null;
+        this.camera.wheelPrecision = 8;
+        this.camera.inertia = 0.9;
+        this.camera.panningSensibility = 0;
+        this.setCameraRotationSpeed(this.cameraRotationSpeed);
+        this.camera.attachControl(this.canvas, false);
         if (this.camera.inputs?.attached?.pointers) {
             this.camera.inputs.attached.pointers.buttons = [2];
+            this.camera.inputs.attached.pointers.panningMouseButton = -1;
+            this.camera.inputs.attached.pointers.useCtrlForPanning = false;
         }
 
-        this.canvas.addEventListener('contextmenu', this.#handleContextMenu);
+        this.canvas.addEventListener('contextmenu', this.#onContextMenu);
 
         new HemisphericLight('light', new Vector3(0, 1, 0), this.scene);
 
         this.#createSphereBoundary(DEFAULT_SPHERE_SCALE);
 
         this.pointerObserver = this.scene.onPointerObservable.add(
-            this.#handlePointerDown,
+            this.#onPointerDown,
             PointerEventTypes.POINTERDOWN
         );
         this.beforeRenderObserver = this.scene.onBeforeRenderObservable.add(() => {
@@ -85,7 +96,7 @@ export class CubesExplodingScene {
             this.#explodeCollidingCubes();
         });
 
-        window.addEventListener('resize', this.#handleResize);
+        window.addEventListener('resize', this.#onResize);
 
         this.engine.runRenderLoop(() => {
             this.scene.render();
@@ -95,6 +106,8 @@ export class CubesExplodingScene {
     bindControls(container) {
         const scaleSlider = container.querySelector('#gpt-cubes-sphere-scale');
         const scaleValue = container.querySelector('#gpt-cubes-sphere-scale-val');
+        const cameraRotationSpeedSlider = container.querySelector('#gpt-cubes-camera-rotation-speed');
+        const cameraRotationSpeedValue = container.querySelector('#gpt-cubes-camera-rotation-speed-val');
         const maxCubesInput = container.querySelector('#gpt-cubes-max-cubes');
 
         scaleSlider?.addEventListener('input', (event) => {
@@ -110,6 +123,14 @@ export class CubesExplodingScene {
             event.target.value = String(nextValue);
             this.maxCubes = nextValue;
         });
+
+        cameraRotationSpeedSlider?.addEventListener('input', (event) => {
+            const speed = Number(event.target.value);
+            this.setCameraRotationSpeed(speed);
+            if (cameraRotationSpeedValue) {
+                cameraRotationSpeedValue.textContent = this.cameraRotationSpeed.toFixed(1);
+            }
+        });
     }
 
     setSphereScale(scale) {
@@ -120,6 +141,23 @@ export class CubesExplodingScene {
         if (this.borderSphere) {
             this.borderSphere.scaling.setAll(scale);
         }
+    }
+
+    setCameraRotationSpeed(speed) {
+        const clampedSpeed = Math.min(
+            MAX_CAMERA_ROTATION_SPEED,
+            Math.max(MIN_CAMERA_ROTATION_SPEED, speed)
+        );
+        this.cameraRotationSpeed = clampedSpeed;
+
+        if (!this.camera) {
+            return;
+        }
+
+        const baseAngularSensibility = 220;
+        const angularSensibility = baseAngularSensibility / clampedSpeed;
+        this.camera.angularSensibilityX = angularSensibility;
+        this.camera.angularSensibilityY = angularSensibility;
     }
 
     spawnCube(spawnPoint) {
@@ -167,8 +205,8 @@ export class CubesExplodingScene {
             this.engine.dispose();
         }
 
-        window.removeEventListener('resize', this.#handleResize);
-        this.canvas?.removeEventListener('contextmenu', this.#handleContextMenu);
+        window.removeEventListener('resize', this.#onResize);
+        this.canvas?.removeEventListener('contextmenu', this.#onContextMenu);
         this.explosionTimeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
         this.explosionTimeoutIds.clear();
     }
@@ -307,6 +345,9 @@ export class CubesExplodingScene {
 export const CUBES_EXPLODING_DEFAULTS = Object.freeze({
     sphereScale: DEFAULT_SPHERE_SCALE,
     maxCubes: DEFAULT_MAX_CUBES,
+    cameraRotationSpeed: DEFAULT_CAMERA_ROTATION_SPEED,
+    minCameraRotationSpeed: MIN_CAMERA_ROTATION_SPEED,
+    maxCameraRotationSpeed: MAX_CAMERA_ROTATION_SPEED,
     minMaxCubes: CUBES_EXPLODING_CONSTANTS.MIN_MAX_CUBES,
     maxMaxCubes: CUBES_EXPLODING_CONSTANTS.MAX_MAX_CUBES
 });
