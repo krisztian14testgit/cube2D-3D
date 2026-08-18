@@ -23,9 +23,19 @@ describe('render3DCubePage (Grok 4.5)', () => {
         };
         const controllerFactory = vi.fn(() => mockController);
 
-        const result = render3DCubePage(root, { controllerFactory });
-        const canvas = root.querySelector('#canvas-menu7-3d');
-        const panel = root.querySelector('#cube-controls-menu7');
+        const ids = {
+            canvasId: 'test-canvas-menu7-3d',
+            scaleId: 'test-cube-scale-menu7',
+            rotationAxisId: 'test-cube-rotation-axis-menu7',
+            rotationSpeedId: 'test-cube-rotation-speed-menu7',
+            cubeColorId: 'test-cube-color-menu7',
+            controlPanelId: 'test-cube-controls-menu7',
+            statusId: 'test-cube-status-menu7'
+        };
+
+        const result = render3DCubePage(root, { ...ids, controllerFactory });
+        const canvas = root.querySelector(`#${ids.canvasId}`);
+        const panel = root.querySelector(`#${ids.controlPanelId}`);
 
         expect(root.textContent).toContain('Created by Grok 4.5');
         expect(panel.disabled).toBe(true);
@@ -35,20 +45,20 @@ describe('render3DCubePage (Grok 4.5)', () => {
         expect(mockController.setCubeScale).toHaveBeenCalledWith(1);
         expect(panel.disabled).toBe(false);
 
-        root.querySelector('#cube-scale-menu7').value = '2.4';
-        root.querySelector('#cube-scale-menu7').dispatchEvent(new Event('input', { bubbles: true }));
+        root.querySelector(`#${ids.scaleId}`).value = '2.4';
+        root.querySelector(`#${ids.scaleId}`).dispatchEvent(new Event('input', { bubbles: true }));
         expect(mockController.setCubeScale).toHaveBeenLastCalledWith(2.4);
 
-        root.querySelector('#cube-rotation-axis-menu7').value = 'z';
-        root.querySelector('#cube-rotation-axis-menu7').dispatchEvent(new Event('change', { bubbles: true }));
+        root.querySelector(`#${ids.rotationAxisId}`).value = 'z';
+        root.querySelector(`#${ids.rotationAxisId}`).dispatchEvent(new Event('change', { bubbles: true }));
         expect(mockController.setRotationAxis).toHaveBeenCalledWith('z');
 
-        root.querySelector('#cube-rotation-speed-menu7').value = '4.2';
-        root.querySelector('#cube-rotation-speed-menu7').dispatchEvent(new Event('input', { bubbles: true }));
+        root.querySelector(`#${ids.rotationSpeedId}`).value = '4.2';
+        root.querySelector(`#${ids.rotationSpeedId}`).dispatchEvent(new Event('input', { bubbles: true }));
         expect(mockController.setRotationSpeed).toHaveBeenCalledWith(4.2);
 
-        root.querySelector('#cube-color-menu7').value = '#ff0000';
-        root.querySelector('#cube-color-menu7').dispatchEvent(new Event('input', { bubbles: true }));
+        root.querySelector(`#${ids.cubeColorId}`).value = '#ff0000';
+        root.querySelector(`#${ids.cubeColorId}`).dispatchEvent(new Event('input', { bubbles: true }));
         expect(mockController.setCubeColor).toHaveBeenCalledWith('#ff0000');
 
         result.cleanup();
