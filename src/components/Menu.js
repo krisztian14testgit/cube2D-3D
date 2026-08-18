@@ -4,6 +4,7 @@ import { renderMenu3 as claudeSonnet } from '../pages/menu3.js';
 import { renderMenu4 as basic } from '../pages/menu4.js';
 import { renderMenu5 } from '../pages/menu5.js';
 import { renderMenu6 } from '../pages/menu6.js';
+import { renderMenu7 } from '../pages/menu7.js';
 
 const DEFAULT_ROUTE = 'menu1';
 const ROUTES = Object.freeze({
@@ -12,7 +13,8 @@ const ROUTES = Object.freeze({
     menu3: geminiPro,
     menu4: claudeSonnet,
     menu5: renderMenu5,
-    menu6: renderMenu6
+    menu6: renderMenu6,
+    menu7: renderMenu7
 });
 
 export class Menu {
@@ -33,6 +35,7 @@ export class Menu {
                     <li><a href="#menu4" data-route="menu4">Claude Sonnet 4.6</a></li>
                     <li><a href="#menu5" data-route="menu5">Gemini3.1-pro - 3D cube</a></li>
                     <li><a href="#menu6" data-route="menu6">GPT5.3-codex - 3D cube</a></li>
+                    <li><a href="#menu7" data-route="menu7">Grok4.5 - 3D cube</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>
             </nav>
