@@ -1,8 +1,10 @@
 import * as BABYLON from '@babylonjs/core';
 import {
+    DEFAULT_CAMERA_ROTATION_SPEED,
     DEFAULT_MAX_CUBES,
     DEFAULT_SPHERE_SCALE,
     bounceVelocity,
+    clampCameraRotationSpeed,
     clampMaxCubes,
     clampPointInsideSphere,
     collectCollisionIndexes,
@@ -22,18 +24,21 @@ const SPHERE_SEGMENTS = 32;
 export class BabylonCubesExplodingController {
     #resizeHandler;
     #pointerHandler;
+    #contextMenuHandler;
     #renderObserver;
     #nextCubeId = 1;
 
     constructor(canvas, {
         sphereScale = DEFAULT_SPHERE_SCALE,
         maxCubes = DEFAULT_MAX_CUBES,
+        cameraRotationSpeed = DEFAULT_CAMERA_ROTATION_SPEED,
         rng = Math.random,
         onCubeCountChange = null
     } = {}) {
         this.canvas = canvas;
         this.sphereScale = sphereScale;
         this.maxCubes = clampMaxCubes(maxCubes);
+        this.cameraRotationSpeed = clampCameraRotationSpeed(cameraRotationSpeed);
         this.rng = rng;
         this.onCubeCountChange = onCubeCountChange;
 
@@ -47,6 +52,7 @@ export class BabylonCubesExplodingController {
 
         this.#resizeHandler = this.#handleResize.bind(this);
         this.#pointerHandler = this.#handlePointerDown.bind(this);
+        this.#contextMenuHandler = this.#handleContextMenu.bind(this);
     }
 
     init() {
@@ -62,8 +68,10 @@ export class BabylonCubesExplodingController {
             BABYLON.Vector3.Zero(),
             this.scene
         );
-        this.camera.attachControl(this.canvas, true);
+        // noPreventDefault=false keeps Babylon from losing pointer capture on drag.
+        this.camera.attachControl(this.canvas, false);
         this.#configureCameraInputs();
+        this.setCameraRotationSpeed(this.cameraRotationSpeed);
         this.camera.lowerRadiusLimit = 4;
         this.camera.upperRadiusLimit = Math.max(40, this.sphereScale * 6);
 
@@ -85,6 +93,7 @@ export class BabylonCubesExplodingController {
 
         window.addEventListener('resize', this.#resizeHandler);
         this.canvas.addEventListener('pointerdown', this.#pointerHandler);
+        this.canvas.addEventListener('contextmenu', this.#contextMenuHandler);
         this.#emitCubeCount();
     }
 
@@ -110,6 +119,17 @@ export class BabylonCubesExplodingController {
     setMaxCubes(value) {
         this.maxCubes = clampMaxCubes(value);
         this.#emitCubeCount();
+    }
+
+    /**
+     * Master multiplier for orbit rotation speed (Babylon camera.movement.speed).
+     * Default 1.0 matches Babylon ArcRotateCamera defaults.
+     */
+    setCameraRotationSpeed(value) {
+        this.cameraRotationSpeed = clampCameraRotationSpeed(value);
+        if (this.camera?.movement) {
+            this.camera.movement.speed = this.cameraRotationSpeed;
+        }
     }
 
     /**
@@ -207,6 +227,7 @@ export class BabylonCubesExplodingController {
     dispose() {
         window.removeEventListener('resize', this.#resizeHandler);
         this.canvas?.removeEventListener('pointerdown', this.#pointerHandler);
+        this.canvas?.removeEventListener('contextmenu', this.#contextMenuHandler);
 
         if (this.scene && this.#renderObserver) {
             this.scene.onBeforeRenderObservable.remove(this.#renderObserver);
@@ -236,12 +257,32 @@ export class BabylonCubesExplodingController {
     }
 
     #configureCameraInputs() {
-        // Prefer right-button orbit; leave left click free for spawning.
+        // Babylon.js v9 ArcRotateCamera defaults (Camera Movement and Input System):
+        //   LMB (button 0) -> rotate, RMB (button 2) -> pan
+        // We need RMB orbit around the sphere, and LMB free for cube spawning.
         const pointers = this.camera?.inputs?.attached?.pointers;
         if (pointers && 'buttons' in pointers) {
-            // Babylon uses button indexes: 0 LMB, 1 MMB, 2 RMB
+            // Only accept right mouse button in the pointer input plugin.
             pointers.buttons = [2];
         }
+
+        const input = this.camera?.movement?.input;
+        if (input && typeof input.setInteraction === 'function') {
+            // Rebind right-drag from pan -> rotate (official inputMap API).
+            input.setInteraction('pointer', { button: 2 }, 'rotate');
+            // Ensure plain left-drag does not orbit if pointers.buttons is ignored.
+            input.setInteraction('pointer', { button: 0 }, 'pan');
+        }
+
+        // Disable panning feel if any pan gesture remains active.
+        if (this.camera && 'panningSensibility' in this.camera) {
+            this.camera.panningSensibility = 0;
+        }
+    }
+
+    #handleContextMenu(event) {
+        // Keep the browser context menu from interrupting right-drag orbit.
+        event.preventDefault();
     }
 
     #createSphereBoundary(scale) {
@@ -392,6 +433,7 @@ export function createBabylonCubesExplodingController(canvas, options) {
 }
 
 export {
+    DEFAULT_CAMERA_ROTATION_SPEED,
     DEFAULT_MAX_CUBES,
     DEFAULT_SPHERE_SCALE
 };

@@ -17,10 +17,13 @@ describe('renderCubesExplodingSection', () => {
         expect(markup).toContain(GROK_CUBES_EXPLODING_DEFAULTS.sectionTitle);
         expect(markup).toContain(GROK_CUBES_EXPLODING_DEFAULTS.sphereScaleId);
         expect(markup).toContain(GROK_CUBES_EXPLODING_DEFAULTS.maxCubesId);
+        expect(markup).toContain(GROK_CUBES_EXPLODING_DEFAULTS.cameraRotationSpeedId);
         expect(markup).toContain('value="8"');
         expect(markup).toContain('value="10"');
+        expect(markup).toContain('value="1"');
         expect(markup).toContain('min="10"');
         expect(markup).toContain('max="100"');
+        expect(markup).toContain('Camera rotation speed');
     });
 
     it('wires controls to the controller and cleans up', () => {
@@ -32,6 +35,7 @@ describe('renderCubesExplodingSection', () => {
             setMaxCubes: vi.fn((value) => {
                 mockController.maxCubes = value;
             }),
+            setCameraRotationSpeed: vi.fn(),
             dispose: vi.fn()
         };
         const controllerFactory = vi.fn((canvas, options) => {
@@ -45,6 +49,7 @@ describe('renderCubesExplodingSection', () => {
         expect(root.querySelector('hr.feature-divider')).toBeTruthy();
         expect(root.querySelector('h2')?.textContent).toBe(GROK_CUBES_EXPLODING_DEFAULTS.sectionTitle);
         expect(controllerFactory).toHaveBeenCalledTimes(1);
+        expect(controllerFactory.mock.calls[0][1].cameraRotationSpeed).toBe(1);
 
         const status = root.querySelector(`#${GROK_CUBES_EXPLODING_DEFAULTS.statusId}`);
         expect(status.textContent).toContain('Cubes: 0 / 10');
@@ -67,6 +72,17 @@ describe('renderCubesExplodingSection', () => {
         maxInput.dispatchEvent(new Event('change', { bubbles: true }));
         expect(mockController.setMaxCubes).toHaveBeenCalledWith(42);
 
+        const rotationInput = root.querySelector(
+            `#${GROK_CUBES_EXPLODING_DEFAULTS.cameraRotationSpeedId}`
+        );
+        rotationInput.value = '2.5';
+        rotationInput.dispatchEvent(new Event('input', { bubbles: true }));
+        expect(mockController.setCameraRotationSpeed).toHaveBeenCalledWith(2.5);
+        expect(
+            root.querySelector(`#${GROK_CUBES_EXPLODING_DEFAULTS.cameraRotationSpeedValueId}`)
+                .textContent
+        ).toBe('2.5');
+
         result.cleanup();
         expect(mockController.dispose).toHaveBeenCalledTimes(1);
     });
@@ -81,6 +97,8 @@ describe('renderCubesExplodingSection', () => {
                 sphereScaleId: 's',
                 sphereScaleValueId: 'sv',
                 maxCubesId: 'm',
+                cameraRotationSpeedId: 'crs',
+                cameraRotationSpeedValueId: 'crsv',
                 statusId: 'st',
                 controllerFactory: vi.fn()
             })

@@ -1,9 +1,13 @@
 import {
+    DEFAULT_CAMERA_ROTATION_SPEED,
     DEFAULT_MAX_CUBES,
     DEFAULT_SPHERE_SCALE,
     createBabylonCubesExplodingController
 } from './BabylonCubesExplodingController.js';
-import { clampMaxCubes } from './cubesExplodingMath.js';
+import {
+    clampCameraRotationSpeed,
+    clampMaxCubes
+} from './cubesExplodingMath.js';
 
 export const GROK_CUBES_EXPLODING_DEFAULTS = Object.freeze({
     sectionTitle: 'Grok4.5 - Cubes exploding',
@@ -11,6 +15,8 @@ export const GROK_CUBES_EXPLODING_DEFAULTS = Object.freeze({
     sphereScaleId: 'sphere-scale-menu7-exploding',
     sphereScaleValueId: 'sphere-scale-value-menu7-exploding',
     maxCubesId: 'max-cubes-menu7-exploding',
+    cameraRotationSpeedId: 'camera-rotation-speed-menu7-exploding',
+    cameraRotationSpeedValueId: 'camera-rotation-speed-value-menu7-exploding',
     statusId: 'cubes-exploding-status-menu7',
     sectionId: 'cubes-exploding-section-menu7',
     createdBy: 'Grok 4.5'
@@ -22,6 +28,8 @@ export function createCubesExplodingMarkup({
     sphereScaleId,
     sphereScaleValueId,
     maxCubesId,
+    cameraRotationSpeedId,
+    cameraRotationSpeedValueId,
     statusId,
     sectionId
 }) {
@@ -55,6 +63,16 @@ export function createCubesExplodingMarkup({
                             step="1"
                             value="${DEFAULT_MAX_CUBES}"
                         >
+                        <label for="${cameraRotationSpeedId}">Camera rotation speed</label>
+                        <input
+                            id="${cameraRotationSpeedId}"
+                            type="range"
+                            min="0.1"
+                            max="5"
+                            step="0.1"
+                            value="${DEFAULT_CAMERA_ROTATION_SPEED}"
+                        >
+                        <span id="${cameraRotationSpeedValueId}">${DEFAULT_CAMERA_ROTATION_SPEED.toFixed(1)}</span>
                     </fieldset>
                 </div>
             </div>
@@ -75,6 +93,8 @@ export function initializeCubesExplodingInteractions(
         sphereScaleId,
         sphereScaleValueId,
         maxCubesId,
+        cameraRotationSpeedId,
+        cameraRotationSpeedValueId,
         statusId,
         controllerFactory = createBabylonCubesExplodingController
     }
@@ -88,12 +108,17 @@ export function initializeCubesExplodingInteractions(
         sphereScale: container.querySelector(`#${sphereScaleId}`),
         sphereScaleValue: container.querySelector(`#${sphereScaleValueId}`),
         maxCubes: container.querySelector(`#${maxCubesId}`),
+        cameraRotationSpeed: container.querySelector(`#${cameraRotationSpeedId}`),
+        cameraRotationSpeedValue: container.querySelector(`#${cameraRotationSpeedValueId}`),
         status: container.querySelector(`#${statusId}`)
     };
 
     const controller = controllerFactory(canvas, {
         sphereScale: Number(controls.sphereScale?.value ?? DEFAULT_SPHERE_SCALE),
         maxCubes: clampMaxCubes(controls.maxCubes?.value ?? DEFAULT_MAX_CUBES),
+        cameraRotationSpeed: clampCameraRotationSpeed(
+            controls.cameraRotationSpeed?.value ?? DEFAULT_CAMERA_ROTATION_SPEED
+        ),
         onCubeCountChange: (count, max) => updateStatus(controls.status, count, max)
     });
 
@@ -120,12 +145,27 @@ export function initializeCubesExplodingInteractions(
         );
     };
 
+    const onCameraRotationSpeedInput = () => {
+        const clamped = clampCameraRotationSpeed(
+            controls.cameraRotationSpeed?.value ?? DEFAULT_CAMERA_ROTATION_SPEED
+        );
+        if (controls.cameraRotationSpeed) {
+            controls.cameraRotationSpeed.value = String(clamped);
+        }
+        if (controls.cameraRotationSpeedValue) {
+            controls.cameraRotationSpeedValue.textContent = clamped.toFixed(1);
+        }
+        controller.setCameraRotationSpeed?.(clamped);
+    };
+
     controls.sphereScale?.addEventListener('input', onSphereScaleInput);
     controls.maxCubes?.addEventListener('change', onMaxCubesChange);
+    controls.cameraRotationSpeed?.addEventListener('input', onCameraRotationSpeedInput);
 
     const cleanup = () => {
         controls.sphereScale?.removeEventListener('input', onSphereScaleInput);
         controls.maxCubes?.removeEventListener('change', onMaxCubesChange);
+        controls.cameraRotationSpeed?.removeEventListener('input', onCameraRotationSpeedInput);
         controller.dispose();
     };
 
@@ -152,6 +192,8 @@ export function appendCubesExplodingSection(container, options = {}) {
         sphereScaleId: config.sphereScaleId,
         sphereScaleValueId: config.sphereScaleValueId,
         maxCubesId: config.maxCubesId,
+        cameraRotationSpeedId: config.cameraRotationSpeedId,
+        cameraRotationSpeedValueId: config.cameraRotationSpeedValueId,
         statusId: config.statusId,
         controllerFactory: config.controllerFactory
     });

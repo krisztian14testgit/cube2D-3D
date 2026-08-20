@@ -7,6 +7,7 @@ const {
     createSphereSpy,
     createBoxSpy,
     attachControlSpy,
+    setInteractionSpy,
     addObservableSpy,
     removeObservableSpy,
     pickSpy,
@@ -32,6 +33,7 @@ const {
         dispose: vi.fn()
     })),
     attachControlSpy: vi.fn(),
+    setInteractionSpy: vi.fn(),
     addObservableSpy: vi.fn((cb) => {
         addObservableSpy.callback = cb;
         return { callback: cb };
@@ -102,11 +104,19 @@ vi.mock('@babylonjs/core', () => {
             this.attachControl = attachControlSpy;
             this.lowerRadiusLimit = 0;
             this.upperRadiusLimit = 0;
+            this.panningSensibility = 1000;
             this.inputs = {
                 attached: {
                     pointers: {
                         buttons: [0, 1, 2]
                     }
+                }
+            };
+            this.movement = {
+                speed: 1,
+                input: {
+                    setInteraction: setInteractionSpy,
+                    getEntry: vi.fn()
                 }
             };
         }
@@ -188,6 +198,7 @@ describe('BabylonCubesExplodingController', () => {
         engineResizeSpy.mockClear();
         runRenderLoopSpy.mockClear();
         createSphereSpy.mockClear();
+        setInteractionSpy.mockClear();
         createBoxSpy.mockClear();
         attachControlSpy.mockClear();
         addObservableSpy.mockClear();
@@ -226,8 +237,12 @@ describe('BabylonCubesExplodingController', () => {
         const controller = createBabylonCubesExplodingController(canvas);
 
         expect(createSphereSpy).toHaveBeenCalledTimes(1);
-        expect(attachControlSpy).toHaveBeenCalledWith(canvas, true);
+        expect(attachControlSpy).toHaveBeenCalledWith(canvas, false);
         expect(controller.camera.inputs.attached.pointers.buttons).toEqual([2]);
+        expect(setInteractionSpy).toHaveBeenCalledWith('pointer', { button: 2 }, 'rotate');
+        expect(setInteractionSpy).toHaveBeenCalledWith('pointer', { button: 0 }, 'pan');
+        expect(controller.camera.movement.speed).toBe(1);
+        expect(controller.camera.panningSensibility).toBe(0);
         expect(runRenderLoopSpy).toHaveBeenCalledTimes(1);
         expect(typeof addObservableSpy.callback).toBe('function');
         expect(controller.sphere.material.wireframe).toBe(true);
@@ -236,6 +251,19 @@ describe('BabylonCubesExplodingController', () => {
             y: DEFAULT_SPHERE_SCALE,
             z: DEFAULT_SPHERE_SCALE
         });
+
+        controller.dispose();
+    });
+
+    it('updates camera rotation speed on the movement layer', () => {
+        const controller = createBabylonCubesExplodingController(canvas);
+        controller.setCameraRotationSpeed(2.5);
+        expect(controller.cameraRotationSpeed).toBe(2.5);
+        expect(controller.camera.movement.speed).toBe(2.5);
+
+        controller.setCameraRotationSpeed(0);
+        expect(controller.cameraRotationSpeed).toBe(0.1);
+        expect(controller.camera.movement.speed).toBe(0.1);
 
         controller.dispose();
     });

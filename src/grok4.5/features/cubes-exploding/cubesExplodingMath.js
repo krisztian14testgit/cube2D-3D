@@ -4,6 +4,9 @@ export const MIN_MAX_CUBES = 10;
 export const MAX_MAX_CUBES = 100;
 export const MIN_CUBE_SCALE = 1;
 export const MAX_CUBE_SCALE = 5;
+export const DEFAULT_CAMERA_ROTATION_SPEED = 1;
+export const MIN_CAMERA_ROTATION_SPEED = 0.1;
+export const MAX_CAMERA_ROTATION_SPEED = 5;
 
 /**
  * Clamp max-cube setting into the allowed UI range.
@@ -14,6 +17,21 @@ export function clampMaxCubes(value, min = MIN_MAX_CUBES, max = MAX_MAX_CUBES) {
         return min;
     }
     return Math.min(max, Math.max(min, Math.round(numeric)));
+}
+
+/**
+ * Clamp camera orbit rotation speed multiplier.
+ */
+export function clampCameraRotationSpeed(
+    value,
+    min = MIN_CAMERA_ROTATION_SPEED,
+    max = MAX_CAMERA_ROTATION_SPEED
+) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) {
+        return DEFAULT_CAMERA_ROTATION_SPEED;
+    }
+    return Math.min(max, Math.max(min, numeric));
 }
 
 /**

@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
+    DEFAULT_CAMERA_ROTATION_SPEED,
     DEFAULT_MAX_CUBES,
     DEFAULT_SPHERE_SCALE,
+    MAX_CAMERA_ROTATION_SPEED,
     MAX_MAX_CUBES,
+    MIN_CAMERA_ROTATION_SPEED,
     MIN_MAX_CUBES,
     bounceVelocity,
+    clampCameraRotationSpeed,
     clampMaxCubes,
     clampPointInsideSphere,
     collectCollisionIndexes,
@@ -23,6 +27,9 @@ describe('cubesExplodingMath', () => {
         expect(DEFAULT_MAX_CUBES).toBe(10);
         expect(MIN_MAX_CUBES).toBe(10);
         expect(MAX_MAX_CUBES).toBe(100);
+        expect(DEFAULT_CAMERA_ROTATION_SPEED).toBe(1);
+        expect(MIN_CAMERA_ROTATION_SPEED).toBe(0.1);
+        expect(MAX_CAMERA_ROTATION_SPEED).toBe(5);
     });
 
     it('clamps max cubes into [10, 100]', () => {
@@ -33,6 +40,15 @@ describe('cubesExplodingMath', () => {
         expect(clampMaxCubes(250)).toBe(100);
         expect(clampMaxCubes('12.6')).toBe(13);
         expect(clampMaxCubes(Number.NaN)).toBe(10);
+    });
+
+    it('clamps camera rotation speed into [0.1, 5]', () => {
+        expect(clampCameraRotationSpeed(0)).toBe(0.1);
+        expect(clampCameraRotationSpeed(1)).toBe(1);
+        expect(clampCameraRotationSpeed(2.5)).toBe(2.5);
+        expect(clampCameraRotationSpeed(9)).toBe(5);
+        expect(clampCameraRotationSpeed('1.5')).toBe(1.5);
+        expect(clampCameraRotationSpeed(Number.NaN)).toBe(1);
     });
 
     it('generates random cube scales inside [1, 5]', () => {
