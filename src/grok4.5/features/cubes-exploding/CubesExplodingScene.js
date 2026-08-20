@@ -282,7 +282,7 @@ export class CubesExplodingScene {
         const collisionIndexes = collectCollisionIndexes(this.cubes.map((cube) => ({
             position: cube.position,
             collisionRadius: cube.metadata.collisionRadius
-        }))).sort((a, b) => b - a);
+        })));
 
         for (let idx = 0; idx < collisionIndexes.length; idx += 1) {
             const index = collisionIndexes[idx];
