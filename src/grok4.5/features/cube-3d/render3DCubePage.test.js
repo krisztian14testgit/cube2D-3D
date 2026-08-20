@@ -4,6 +4,7 @@ import {
     initialize3DCubeInteractions,
     render3DCubePage
 } from './render3DCubePage.js';
+import { GROK_CUBES_EXPLODING_DEFAULTS } from '../cubes-exploding/renderCubesExplodingSection.js';
 
 describe('render3DCubePage', () => {
     beforeEach(() => {
@@ -22,9 +23,17 @@ describe('render3DCubePage', () => {
             setCubeColor: vi.fn(),
             dispose: vi.fn()
         };
+        const mockExplodingController = {
+            maxCubes: 10,
+            getCubeCount: vi.fn(() => 0),
+            setSphereScale: vi.fn(),
+            setMaxCubes: vi.fn(),
+            dispose: vi.fn()
+        };
         const controllerFactory = vi.fn(() => mockController);
+        const explodingControllerFactory = vi.fn(() => mockExplodingController);
 
-        const result = render3DCubePage(root, { controllerFactory });
+        const result = render3DCubePage(root, { controllerFactory, explodingControllerFactory });
         const canvas = root.querySelector(`#${GROK_MENU7_DEFAULTS.canvasId}`);
         const panel = root.querySelector(`#${GROK_MENU7_DEFAULTS.controlPanelId}`);
         const status = root.querySelector(`#${GROK_MENU7_DEFAULTS.statusId}`);
@@ -55,8 +64,19 @@ describe('render3DCubePage', () => {
         root.querySelector(`#${GROK_MENU7_DEFAULTS.cubeColorId}`).dispatchEvent(new Event('input', { bubbles: true }));
         expect(mockController.setCubeColor).toHaveBeenCalledWith('#ff0000');
 
+        // Exploding section stacked under the first feature
+        expect(root.querySelector('hr.feature-divider')).toBeTruthy();
+        const headings = [...root.querySelectorAll('h2')].map((el) => el.textContent);
+        expect(headings).toContain(GROK_MENU7_DEFAULTS.title);
+        expect(headings).toContain(GROK_CUBES_EXPLODING_DEFAULTS.sectionTitle);
+        expect(root.querySelector(`#${GROK_CUBES_EXPLODING_DEFAULTS.canvasId}`)).toBeTruthy();
+        expect(root.querySelector(`#${GROK_CUBES_EXPLODING_DEFAULTS.sphereScaleId}`)).toBeTruthy();
+        expect(root.querySelector(`#${GROK_CUBES_EXPLODING_DEFAULTS.maxCubesId}`)).toBeTruthy();
+        expect(explodingControllerFactory).toHaveBeenCalledTimes(1);
+
         result.cleanup();
         expect(mockController.dispose).toHaveBeenCalledTimes(1);
+        expect(mockExplodingController.dispose).toHaveBeenCalledTimes(1);
         expect(controllerFactory).toHaveBeenCalledTimes(1);
     });
 

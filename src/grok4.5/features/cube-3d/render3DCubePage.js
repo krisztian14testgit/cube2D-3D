@@ -1,4 +1,5 @@
 import { createBabylonCubeController } from './BabylonCubeController.js';
+import { appendCubesExplodingSection } from '../cubes-exploding/renderCubesExplodingSection.js';
 
 const DEFAULT_SCALE = 1;
 const DEFAULT_ROTATION_AXIS = 'y';
@@ -148,7 +149,7 @@ export function render3DCubePage(container, options = {}) {
 
     container.innerHTML = create3DCubeMarkup(config);
 
-    return initialize3DCubeInteractions(container, {
+    const cubeFeature = initialize3DCubeInteractions(container, {
         canvasId: config.canvasId,
         scaleId: config.scaleId,
         rotationAxisId: config.rotationAxisId,
@@ -158,4 +159,20 @@ export function render3DCubePage(container, options = {}) {
         statusId: config.statusId,
         controllerFactory: config.controllerFactory
     });
+
+    const explodingFeature = appendCubesExplodingSection(container, {
+        controllerFactory: config.explodingControllerFactory
+    });
+
+    const cleanup = () => {
+        cubeFeature.cleanup();
+        explodingFeature.cleanup();
+    };
+
+    return {
+        canvas: cubeFeature.canvas,
+        controller: cubeFeature.controller,
+        explodingController: explodingFeature.controller,
+        cleanup
+    };
 }
