@@ -113,7 +113,7 @@ export class BabylonCubeController {
         }
 
         this.cube = BABYLON.MeshBuilder.CreateBox('interactive-cube', { size: 1 }, this.scene);
-        this.cube.position = new BABYLON.Vector3(0, 0, 0);
+        this.cube.position = BABYLON.Vector3.Zero();
 
         this.cubeMaterial = new BABYLON.StandardMaterial('interactive-cube-material', this.scene);
         this.setCubeColor(this.cubeColor);

@@ -17,8 +17,8 @@ export function create3DCubeMarkup({
     createdBy
 }) {
     return `
-        <p><i>Created by ${createdBy}</i></p>
         <h2>${title}</h2>
+        <p><i>Created by ${createdBy}</i></p>
         <p>Click inside the 3D coordinate system to draw the cube, then use the controls.</p>
         <div class="canvas-container">
             <canvas id="${canvasId}" width="513" height="513"></canvas>
