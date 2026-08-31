@@ -40,6 +40,9 @@ function drawCoordinateAxes(scene, axisLength) {
     ).color = new BABYLON.Color3(0, 0, 1);
 }
 
+/**
+ * Owns Babylon engine/scene lifecycle and cube transform behavior.
+ */
 export class BabylonCubeController {
     #resizeHandler;
 
@@ -147,6 +150,10 @@ export class BabylonCubeController {
     dispose() {
         window.removeEventListener('resize', this.#resizeHandler);
         this.engine?.dispose();
+        this.engine = null;
+        this.scene = null;
+        this.cube = null;
+        this.cubeMaterial = null;
     }
 
     #handleResize() {
@@ -159,3 +166,10 @@ export function createBabylonCubeController(canvas, options) {
     controller.init();
     return controller;
 }
+
+export {
+    DEFAULT_AXIS_LENGTH,
+    DEFAULT_ROTATION_AXIS,
+    DEFAULT_ROTATION_SPEED,
+    DEFAULT_CUBE_COLOR
+};

@@ -1,9 +1,22 @@
 import { createBabylonCubeController } from './BabylonCubeController.js';
+import { appendCubesExplodingSection } from '../cubes-exploding/renderCubesExplodingSection.js';
 
 const DEFAULT_SCALE = 1;
 const DEFAULT_ROTATION_AXIS = 'y';
 const DEFAULT_ROTATION_SPEED = 1;
 const DEFAULT_CUBE_COLOR = '#87cefa';
+
+export const GROK_MENU7_DEFAULTS = Object.freeze({
+    title: 'Grok4.5 - 3D babylonjs',
+    canvasId: 'canvas-menu7-3d',
+    scaleId: 'cube-scale-menu7',
+    rotationAxisId: 'cube-rotation-axis-menu7',
+    rotationSpeedId: 'cube-rotation-speed-menu7',
+    cubeColorId: 'cube-color-menu7',
+    controlPanelId: 'cube-controls-menu7',
+    statusId: 'cube-status-menu7',
+    createdBy: 'Grok 4.5'
+});
 
 export function create3DCubeMarkup({
     title,
@@ -24,7 +37,7 @@ export function create3DCubeMarkup({
             <canvas id="${canvasId}" width="513" height="513"></canvas>
             <div class="manipulations">
                 <p id="${statusId}">Click the canvas to create the cube.</p>
-                <fieldset id="${controlPanelId}">
+                <fieldset id="${controlPanelId}" disabled>
                     <legend>Cube controls</legend>
                     <label for="${scaleId}">Scale</label>
                     <input id="${scaleId}" type="range" min="0.5" max="3" step="0.1" value="${DEFAULT_SCALE}">
@@ -45,10 +58,14 @@ export function create3DCubeMarkup({
 }
 
 function setControlAvailability(controls, enabled) {
-    controls.panel.disabled = !enabled;
-    controls.status.textContent = enabled
-        ? 'Cube is active. Adjust transform and rotation controls.'
-        : 'Click the canvas to create the cube.';
+    if (controls.panel) {
+        controls.panel.disabled = !enabled;
+    }
+    if (controls.status) {
+        controls.status.textContent = enabled
+            ? 'Cube is active. Adjust transform and rotation controls.'
+            : 'Click the canvas to create the cube.';
+    }
 }
 
 export function initialize3DCubeInteractions(
@@ -124,38 +141,38 @@ export function initialize3DCubeInteractions(
     return { canvas, controller, cleanup };
 }
 
-export function render3DCubePage(container, {
-    title = 'GPT5.3-codex - 3D cube',
-    canvasId = 'canvas-menu6-3d',
-    scaleId = 'cube-scale-menu6',
-    rotationAxisId = 'cube-rotation-axis-menu6',
-    rotationSpeedId = 'cube-rotation-speed-menu6',
-    cubeColorId = 'cube-color-menu6',
-    controlPanelId = 'cube-controls-menu6',
-    statusId = 'cube-status-menu6',
-    createdBy = 'GPT5.3-codex',
-    controllerFactory = createBabylonCubeController
-} = {}) {
-    container.innerHTML = create3DCubeMarkup({
-        title,
-        canvasId,
-        scaleId,
-        rotationAxisId,
-        rotationSpeedId,
-        cubeColorId,
-        controlPanelId,
-        statusId,
-        createdBy
+export function render3DCubePage(container, options = {}) {
+    const config = {
+        ...GROK_MENU7_DEFAULTS,
+        ...options
+    };
+
+    container.innerHTML = create3DCubeMarkup(config);
+
+    const cubeFeature = initialize3DCubeInteractions(container, {
+        canvasId: config.canvasId,
+        scaleId: config.scaleId,
+        rotationAxisId: config.rotationAxisId,
+        rotationSpeedId: config.rotationSpeedId,
+        cubeColorId: config.cubeColorId,
+        controlPanelId: config.controlPanelId,
+        statusId: config.statusId,
+        controllerFactory: config.controllerFactory
     });
 
-    return initialize3DCubeInteractions(container, {
-        canvasId,
-        scaleId,
-        rotationAxisId,
-        rotationSpeedId,
-        cubeColorId,
-        controlPanelId,
-        statusId,
-        controllerFactory
+    const explodingFeature = appendCubesExplodingSection(container, {
+        controllerFactory: config.explodingControllerFactory
     });
+
+    const cleanup = () => {
+        cubeFeature.cleanup();
+        explodingFeature.cleanup();
+    };
+
+    return {
+        canvas: cubeFeature.canvas,
+        controller: cubeFeature.controller,
+        explodingController: explodingFeature.controller,
+        cleanup
+    };
 }
