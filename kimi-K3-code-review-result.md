@@ -162,3 +162,27 @@ Routing files (src/pages/*, src/components/Menu.js) were read only to verify wir
 
 ## Release recommendation
 **Approve with follow-up** — all tests pass and the wired features behave correctly, but the High-severity lifecycle defects (unstoppable Three.js render loop on dispose, duplicate rAF chains on double-start, broken stop/start in gemini bouncing squares) and the gemini-side leaks/limits should be fixed before that scene is wired into a menu.
+
+## Per-model comparison
+
+Score points per model (1-10), derived from the chapter findings above. Averages are the unweighted mean of the three columns.
+
+| Model | Efficiency | Clean coding | Structure | Average | Evidence summary |
+|---|---:|---:|---:|---:|---|
+| src/gpt5.3-codex | 7 | 7 | 6 | 6.7 | Bounded per-frame work (`maxSquares` cap with `shift()` eviction), `const`-by-default, private fields, frozen `DEFAULTS`, config injection; but full grid+labels redraw every frame, dead `scaleCube` path in `CoordinateSystem`, no cleanup contract for menu listeners, duplicate rAF loop on double `start()` |
+| src/gemini3.1-pro | 4 | 5 | 4 | 4.3 | Uncapped O(n²) collision scan, unstoppable render loop on `dispose()`, undisposed GPU geometries/materials/particles; underscore pseudo-private style is readable but older; monolithic scene owns DOM binding + physics + rendering, global `getElementById` lookups, asymmetric listener register/remove, dead unwired `bindControls` |
+| src/grok4.5 | 8 | 8 | 9 | 8.3 | Capped work (`maxCubes` clamped to [10,100]), disposed meshes/materials/particle systems; pure math module (`cubesExplodingMath.js`) separated from Babylon wiring, injected `rng` and factories, named constants; controllers own their lifecycle, pages return `cleanup()`, outward-only bounce and half-extent math are correct; minor: frame-based (not delta-time) stepping, duplicated defaults |
+
+**Ranking:** grok4.5 (8.3) > gpt5.3-codex (6.7) > gemini3.1-pro (4.3). Grok4.5 is the reference implementation for structure and lifecycle safety; gpt5.3-codex is solid with small correctness gaps; gemini3.1-pro needs the lifecycle, limits, and leak fixes listed in the findings before its exploding scene is wired into a menu.
+
+## Per-model comparison
+
+Score points per model (1-10), derived from the chapter findings above. Averages are the unweighted mean of the three columns.
+
+| Model | Efficiency | Clean coding | Structure | Average | Evidence summary |
+|---|---:|---:|---:|---:|---|
+| src/gpt5.3-codex | 7 | 7 | 6 | 6.7 | Bounded per-frame work (`maxSquares` cap with `shift()` eviction), `const`-by-default, private fields, frozen `DEFAULTS`, config injection; but full grid+labels redraw every frame, dead `scaleCube` path in `CoordinateSystem`, no cleanup contract for menu listeners, duplicate rAF loop on double `start()` |
+| src/gemini3.1-pro | 4 | 5 | 4 | 4.3 | Uncapped O(n²) collision scan, unstoppable render loop on `dispose()`, undisposed GPU geometries/materials/particles; underscore pseudo-private style is readable but older; monolithic scene owns DOM binding + physics + rendering, global `getElementById` lookups, asymmetric listener register/remove, dead unwired `bindControls` |
+| src/grok4.5 | 8 | 8 | 9 | 8.3 | Capped work (`maxCubes` clamped to [10,100]), disposed meshes/materials/particle systems; pure math module (`cubesExplodingMath.js`) separated from Babylon wiring, injected `rng` and factories, named constants; controllers own their lifecycle, pages return `cleanup()`, outward-only bounce and half-extent math are correct; minor: frame-based (not delta-time) stepping, duplicated defaults |
+
+**Ranking:** grok4.5 (8.3) > gpt5.3-codex (6.7) > gemini3.1-pro (4.3). Grok4.5 is the reference implementation for structure and lifecycle safety; gpt5.3-codex is solid with small correctness gaps; gemini3.1-pro needs the lifecycle, limits, and leak fixes listed in the findings before its exploding scene is wired into a menu.
