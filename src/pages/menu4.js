@@ -1,10 +1,8 @@
 /**
  * "Basic" landing page of the app (default route).
  *
- * This page intentionally has no coordinate-system / cube drawing anymore.
  * It serves as an in-app "About this project" page so a visitor immediately
- * understands what the project is, why it exists, and what each menu entry
- * shows before picking a specific LLM implementation to explore.
+ * understands what the project is, why it exists.
  */
 
 const MENU_OVERVIEW = [
