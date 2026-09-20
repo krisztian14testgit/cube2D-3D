@@ -23,3 +23,85 @@ Programmer just checks the generated codes part and validate them.
 - It will be written by Python: 
     - v3.x
     - graphics lib
+
+## What this project actually is
+
+This repository is an **LLM comparison sandbox**. The same brief (draw a 2D
+coordinate system, animate bouncing/rotating squares, render a 3D cube, then
+make many 3D cubes explode inside a bounding sphere) is handed to several
+different AI coding agents / models. Each model implements the brief
+independently, in its own folder under [src/](/src), without looking at the
+other models' code. A human (the repository owner) only reviews, validates,
+and wires up the generated code — the actual feature logic is authored by the
+LLMs themselves. The goal is to observe how different models approach the
+same problem: code structure, naming, test coverage, and correctness.
+
+## Project structure
+
+```
+├── main.js                 # App bootstrap, mounts the Menu component
+├── index.html               # Single HTML entry point (Vite)
+├── global-style.css         # Shared layout/nav styling for every menu page
+├── src/
+│   ├── components/
+│   │   └── Menu.js          # Top navigation bar + client-side router (hash-less)
+│   ├── pages/
+│   │   ├── menu1.js … menu7.js   # One render function per navigation entry
+│   │   └── *.test.js             # Vitest specs for the page wiring
+│   ├── gpt5.3-codex/         # GPT-5.3 Codex's independent solution
+│   ├── gemini3.1-pro/        # Gemini 3.1 Pro's independent solution
+│   ├── claude-sonnet-4.6/    # Claude Sonnet 4.6's independent solution
+│   └── grok4.5/              # Grok 4.5's independent solution (Babylon.js)
+│       └── features/
+│           ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│           ├── bouncing-squares/   # Step 2: physics, collision, rotation
+│           ├── cube-3d/            # Step 4: 3D cube rendering (WebGL)
+│           └── cubes-exploding/    # Bonus: many exploding 3D cubes
+├── plans/                    # Per-model implementation/feature plans
+├── code-review/              # Per-model AI-generated code review results
+└── .github/
+    ├── copilot-instructions.md      # Repo-wide instructions for GitHub Copilot
+    └── instructions/                 # Scoped review/coding instruction files
+```
+
+Every model folder under `src/` mirrors the same `features/` sub-structure
+(`coordinate-system`, `bouncing-squares`, `cube-3d`/`cubes-exploding`) so that
+implementations stay easy to compare side by side.
+
+## Navigation menu
+
+The top navigation bar (see [Menu.js](/src/components/Menu.js)) exposes one
+entry per implementation/feature. The menu **labels** intentionally show the
+LLM name that produced the underlying code, so the visitor always knows which
+model is being showcased:
+
+| Menu label | Renders | Model / purpose |
+| --- | --- | --- |
+| Basic | `menu4.js` | Project overview page (this document, in-app) — no LLM branding, general/basic info |
+| GPT-5.3-Codex | `menu1.js` | Coordinate system + bouncing squares by GPT-5.3 Codex |
+| Gemini 3.1 pro | `menu2.js` | Coordinate system + bouncing squares by Gemini 3.1 Pro |
+| Claude Sonnet 4.6 | `menu3.js` | Coordinate system + bouncing squares by Claude Sonnet 4.6 |
+| Gemini3.1-pro - 3D cube | `menu5.js` | Reserved / in progress on this branch |
+| GPT5.3-codex - 3D cube | `menu6.js` | Reserved / in progress on this branch |
+| Grok4.5 - 3D babylonjs | `menu7.js` | 3D cube + cubes-exploding scene by Grok 4.5 (Babylon.js) |
+
+## Tech stack
+
+- Vanilla JavaScript (ES modules), HTML5 canvas for 2D drawing.
+- [Babylon.js](https://www.babylonjs.com/) and [Three.js](https://threejs.org/) for 3D rendering, depending on the model's choice.
+- [Vite](https://vitejs.dev/) for the dev server and production build.
+- [Vitest](https://vitest.dev/) + `jsdom` for unit/integration tests.
+
+## Scripts
+
+- `npm start` – run the Vite dev server.
+- `npm run build` – build the production bundle into `dist/`.
+- `npm run build:prod` – preview the production build.
+- `npm test` – run the Vitest suite with coverage.
+
+## Code review process
+
+Each model's implementation is additionally reviewed by AI code-review agents
+using the scoped rules in [.github/instructions/](/.github/instructions). The
+resulting reports are stored per model under [code-review/](/code-review) for
+transparency and comparison.
