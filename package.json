@@ -21,14 +21,14 @@
     "test": "vitest run --coverage"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^5.0.0",
-    "jsdom": "^29.1.1",
+    "@vitest/coverage-v8": "^5.0.1",
+    "jsdom": "^30.1.0",
     "vite": "^8.3.0",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   },
   "dependencies": {
-    "@babylonjs/core": "^9.26.0",
-    "@babylonjs/gui": "^9.26.0",
+    "@babylonjs/core": "^9.27.1",
+    "@babylonjs/gui": "^9.27.1",
     "three": "^0.186.0"
   }
 }
