@@ -33,8 +33,8 @@ export class Menu {
                     <li><a href="#menu2" data-route="menu2">GPT-5.3-Codex </a></li>
                     <li><a href="#menu3" data-route="menu3">Gemini 3.1 pro </a></li>
                     <li><a href="#menu4" data-route="menu4">Claude Sonnet 4.6</a></li>
-                    <li><a href="#menu5" data-route="menu5">Gemini3.1-pro - 3D cube</a></li>
-                    <li><a href="#menu6" data-route="menu6">GPT5.3-codex - 3D cube</a></li>
+                    <li><a href="#menu5" data-route="menu5">Gemini3.1-pro - 3D threejs</a></li>
+                    <li><a href="#menu6" data-route="menu6">GPT5.3-codex - 3D babylonjs</a></li>
                     <li><a href="#menu7" data-route="menu7">Grok4.5 - 3D babylonjs</a></li>
                 </ul>
                 <div class="version-info">v${this.version}</div>

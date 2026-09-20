@@ -14,7 +14,7 @@ export function renderMenu6(container) {
     container.appendChild(explodingSection);
 
     const cubeFeature = render3DCubePage(cubeSection, {
-        title: 'GPT5.3-codex - 3D cube',
+        title: 'GPT5.3-codex - 3D babylonjs',
         canvasId: 'canvas-menu6-3d',
         scaleId: 'cube-scale-menu6',
         rotationAxisId: 'cube-rotation-axis-menu6',

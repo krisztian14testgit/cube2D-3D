@@ -94,8 +94,8 @@ model is being showcased:
 | GPT-5.3-Codex | `menu1.js` | Coordinate system + bouncing squares by GPT-5.3 Codex |
 | Gemini 3.1 pro | `menu2.js` | Coordinate system + bouncing squares by Gemini 3.1 Pro |
 | Claude Sonnet 4.6 | `menu3.js` | Coordinate system + bouncing squares by Claude Sonnet 4.6 |
-| Gemini3.1-pro - 3D cube | `menu5.js` | 3D cube scene by Gemini 3.1 Pro (Three.js) |
-| GPT5.3-codex - 3D cube | `menu6.js` | 3D cube + cubes-exploding scene by GPT-5.3 Codex (Babylon.js) |
+| Gemini3.1-pro - 3D threejs | `menu5.js` | 3D cube scene by Gemini 3.1 Pro (Three.js) |
+| GPT5.3-codex - 3D babylonjs | `menu6.js` | 3D cube + cubes-exploding scene by GPT-5.3 Codex (Babylon.js) |
 | Grok4.5 - 3D babylonjs | `menu7.js` | 3D cube + cubes-exploding scene by Grok 4.5 (Babylon.js) |
 
 ## Tech stack

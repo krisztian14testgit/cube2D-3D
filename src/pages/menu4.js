@@ -23,11 +23,11 @@ const MENU_OVERVIEW = [
         detail: 'Coordinate system + bouncing/rotating squares implemented by Claude Sonnet 4.6.'
     },
     {
-        label: 'Gemini3.1-pro - 3D cube',
+        label: 'Gemini3.1-pro - 3D threejs',
         detail: '3D cube scene implemented by Gemini 3.1 Pro with Three.js.'
     },
     {
-        label: 'GPT5.3-codex - 3D cube',
+        label: 'GPT5.3-codex - 3D babylonjs',
         detail: '3D cube and "cubes exploding" scene implemented by GPT-5.3 Codex with Babylon.js.'
     },
     {
