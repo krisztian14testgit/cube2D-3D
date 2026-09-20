@@ -24,11 +24,11 @@ const MENU_OVERVIEW = [
     },
     {
         label: 'Gemini3.1-pro - 3D cube',
-        detail: '3D cube feature reserved for Gemini 3.1 Pro.'
+        detail: '3D cube scene implemented by Gemini 3.1 Pro with Three.js.'
     },
     {
         label: 'GPT5.3-codex - 3D cube',
-        detail: '3D cube feature reserved for GPT-5.3 Codex.'
+        detail: '3D cube and "cubes exploding" scene implemented by GPT-5.3 Codex with Babylon.js.'
     },
     {
         label: 'Grok4.5 - 3D babylonjs',

@@ -42,8 +42,8 @@ global-style.css            – shared nav/layout styling
 src/
   components/Menu.js        – top navigation + client-side router
   pages/menu1.js … menu7.js – one render function per nav entry (page glue only)
-  gpt5.3-codex/features/     – GPT-5.3 Codex's independent solution
-  gemini3.1-pro/features/    – Gemini 3.1 Pro's independent solution
+  gpt5.3-codex/features/     – GPT-5.3 Codex's independent solution (Babylon.js)
+  gemini3.1-pro/features/    – Gemini 3.1 Pro's independent solution (Three.js)
   claude-sonnet-4.6/features/ – Claude Sonnet 4.6's independent solution
   grok4.5/features/          – Grok 4.5's independent solution (Babylon.js)
 plans/                      – per-model feature/implementation plans
@@ -51,16 +51,20 @@ code-review/                – per-model AI code-review results
 .github/instructions/       – scoped instructions applied to specific folders
 ```
 
-Each model folder mirrors the same `features/` sub-structure so
-implementations stay comparable:
+Each model folder mirrors the same kind of `features/` sub-structure so
+implementations stay comparable, though the 3D cube folder name and library
+vary per model:
 
 - `features/coordinate-system/` – 2D canvas grid, axes, scale, single cube.
 - `features/bouncing-squares/` – many 2D squares with random scale, motion,
   rotation, wall bounce, and collision-based removal.
-- `features/cube-3d/` – 3D cube rendering (Babylon.js or Three.js) with
-  camera/orbit controls, preserving rotation/scale/movement.
+- `features/cube-3d/` (GPT-5.3 Codex, Grok 4.5) or `features/threejs-cube/`
+  (Gemini 3.1 Pro) – 3D cube rendering with camera/orbit controls, preserving
+  rotation/scale/movement. GPT-5.3 Codex and Grok 4.5 use Babylon.js; Gemini
+  3.1 Pro uses Three.js.
 - `features/cubes-exploding/` – many 3D cubes spawned inside a bounding
-  sphere with physics, collision, and particle/disposal effects.
+  sphere with physics, collision, and particle/disposal effects. Implemented
+  by GPT-5.3 Codex, Gemini 3.1 Pro, and Grok 4.5.
 
 ## Tech stack & conventions
 

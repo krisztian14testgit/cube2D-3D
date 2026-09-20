@@ -48,8 +48,18 @@ same problem: code structure, naming, test coverage, and correctness.
 │   ├── pages/
 │   │   ├── menu1.js … menu7.js   # One render function per navigation entry
 │   │   └── *.test.js             # Vitest specs for the page wiring
-│   ├── gpt5.3-codex/         # GPT-5.3 Codex's independent solution
-│   ├── gemini3.1-pro/        # Gemini 3.1 Pro's independent solution
+│   ├── gpt5.3-codex/         # GPT-5.3 Codex's independent solution (Babylon.js)
+│   │   └── features/
+│   │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│   │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
+│   │       ├── cube-3d/            # 3D cube rendering with Babylon.js
+│   │       └── cubes-exploding/    # Many exploding 3D cubes (Babylon.js)
+│   ├── gemini3.1-pro/        # Gemini 3.1 Pro's independent solution (Three.js)
+│   │   └── features/
+│   │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│   │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
+│   │       ├── threejs-cube/       # 3D cube rendering with Three.js
+│   │       └── cubes-exploding/    # Many exploding 3D cubes (Three.js)
 │   ├── claude-sonnet-4.6/    # Claude Sonnet 4.6's independent solution
 │   └── grok4.5/              # Grok 4.5's independent solution (Babylon.js)
 │       └── features/
@@ -64,9 +74,12 @@ same problem: code structure, naming, test coverage, and correctness.
     └── instructions/                 # Scoped review/coding instruction files
 ```
 
-Every model folder under `src/` mirrors the same `features/` sub-structure
-(`coordinate-system`, `bouncing-squares`, `cube-3d`/`cubes-exploding`) so that
-implementations stay easy to compare side by side.
+Every model folder under `src/` mirrors the same kind of `features/`
+sub-structure (`coordinate-system`, `bouncing-squares`, a 3D cube feature, and
+`cubes-exploding`) so that implementations stay easy to compare side by side.
+The 3D cube folder name varies per model — `cube-3d/` for GPT-5.3 Codex and
+Grok 4.5 (both Babylon.js), `threejs-cube/` for Gemini 3.1 Pro (Three.js) —
+since each model chose its own naming and 3D library independently.
 
 ## Navigation menu
 
@@ -81,8 +94,8 @@ model is being showcased:
 | GPT-5.3-Codex | `menu1.js` | Coordinate system + bouncing squares by GPT-5.3 Codex |
 | Gemini 3.1 pro | `menu2.js` | Coordinate system + bouncing squares by Gemini 3.1 Pro |
 | Claude Sonnet 4.6 | `menu3.js` | Coordinate system + bouncing squares by Claude Sonnet 4.6 |
-| Gemini3.1-pro - 3D cube | `menu5.js` | Reserved / in progress on this branch |
-| GPT5.3-codex - 3D cube | `menu6.js` | Reserved / in progress on this branch |
+| Gemini3.1-pro - 3D cube | `menu5.js` | 3D cube scene by Gemini 3.1 Pro (Three.js) |
+| GPT5.3-codex - 3D cube | `menu6.js` | 3D cube + cubes-exploding scene by GPT-5.3 Codex (Babylon.js) |
 | Grok4.5 - 3D babylonjs | `menu7.js` | 3D cube + cubes-exploding scene by Grok 4.5 (Babylon.js) |
 
 ## Tech stack
