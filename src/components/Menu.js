@@ -1,20 +1,12 @@
-import { renderMenu1 as gptCodex } from '../pages/menu1.js';
-import { renderMenu2 as geminiPro } from '../pages/menu2.js';
-import { renderMenu3 as claudeSonnet } from '../pages/menu3.js';
-import { renderMenu4 as basic } from '../pages/menu4.js';
-import { renderMenu5 } from '../pages/menu5.js';
-import { renderMenu6 } from '../pages/menu6.js';
-import { renderMenu7 } from '../pages/menu7.js';
-
 const DEFAULT_ROUTE = 'menu1';
 const ROUTES = Object.freeze({
-    menu1: basic,
-    menu2: gptCodex,
-    menu3: geminiPro,
-    menu4: claudeSonnet,
-    menu5: renderMenu5,
-    menu6: renderMenu6,
-    menu7: renderMenu7
+    menu1: () => import('../pages/menu4.js').then((module) => module.renderMenu4),
+    menu2: () => import('../pages/menu1.js').then((module) => module.renderMenu1),
+    menu3: () => import('../pages/menu2.js').then((module) => module.renderMenu2),
+    menu4: () => import('../pages/menu3.js').then((module) => module.renderMenu3),
+    menu5: () => import('../pages/menu5.js').then((module) => module.renderMenu5),
+    menu6: () => import('../pages/menu6.js').then((module) => module.renderMenu6),
+    menu7: () => import('../pages/menu7.js').then((module) => module.renderMenu7)
 });
 
 export class Menu {
@@ -23,6 +15,7 @@ export class Menu {
         this.contentContainer = contentContainer;
         this.version = version;
         this.routes = ROUTES;
+        this.navigationId = 0;
     }
 
     render() {
@@ -54,7 +47,7 @@ export class Menu {
         this.navigate(event.target.getAttribute('data-route'));
     };
 
-    navigate(route) {
+    async navigate(route) {
         const links = this.navContainer.querySelectorAll('a');
         links.forEach((link) => {
             if (link.getAttribute('data-route') === route) {
@@ -64,9 +57,13 @@ export class Menu {
             }
         });
 
-        const renderFunction = this.routes[route];
-        if (renderFunction) {
-            renderFunction(this.contentContainer);
+        const navigationId = ++this.navigationId;
+        const loadRoute = this.routes[route];
+        if (loadRoute) {
+            const renderFunction = await loadRoute();
+            if (navigationId === this.navigationId) {
+                renderFunction(this.contentContainer);
+            }
         }
     }
 }

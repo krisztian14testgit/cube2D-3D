@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     port: 3500,
     // disabled auto-open because we will handle it inside VS Code
@@ -9,8 +9,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 6500,
+    minify: mode === 'production',
   },
   test: {
     environment: 'jsdom'
   }
-});
+}));
