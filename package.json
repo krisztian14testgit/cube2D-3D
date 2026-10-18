@@ -16,8 +16,8 @@
   "main": "main.js",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
-    "build:prod": "vite preview",
+    "build": "vite build --mode development",
+    "build:prod": "vite build --mode production",
     "test": "vitest run --coverage"
   },
   "devDependencies": {
