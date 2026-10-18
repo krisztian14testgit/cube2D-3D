@@ -119,3 +119,9 @@ Each model's implementation is additionally reviewed by AI code-review agents
 using the scoped rules in [.github/instructions/](/.github/instructions). The
 resulting reports are stored per model under [code-review/](/code-review) for
 transparency and comparison.
+
+### Review conclusion and improvement plans
+
+- [Consolidated conclusion report](/code-review/conclusion.report.md) – the findings of the four review reports merged and grouped by severity (Major, Minor, Low).
+- [Gemini improvement plan](/plans/gemini/improvement-plan.md) – planned fixes for `src/gemini3.1-pro` based on the conclusion report.
+- [GPT-5.3 Codex improvement plan](/plans/gpt5.3-codex/improvement-plan.md) – planned fixes for `src/gpt5.3-codex` based on the conclusion report.
