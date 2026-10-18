@@ -1,9 +1,9 @@
 const DEFAULT_ROUTE = 'menu1';
 const ROUTES = Object.freeze({
-    menu1: () => import('../pages/menu1.js').then((module) => module.renderMenu1),
-    menu2: () => import('../pages/menu2.js').then((module) => module.renderMenu2),
-    menu3: () => import('../pages/menu3.js').then((module) => module.renderMenu3),
-    menu4: () => import('../pages/menu4.js').then((module) => module.renderMenu4),
+    menu1: () => import('../pages/menu4.js').then((module) => module.renderMenu4),
+    menu2: () => import('../pages/menu1.js').then((module) => module.renderMenu1),
+    menu3: () => import('../pages/menu2.js').then((module) => module.renderMenu2),
+    menu4: () => import('../pages/menu3.js').then((module) => module.renderMenu3),
     menu5: () => import('../pages/menu5.js').then((module) => module.renderMenu5),
     menu6: () => import('../pages/menu6.js').then((module) => module.renderMenu6),
     menu7: () => import('../pages/menu7.js').then((module) => module.renderMenu7)
