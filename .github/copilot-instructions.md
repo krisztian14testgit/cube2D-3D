@@ -15,49 +15,71 @@ system, animate bouncing/rotating squares, render a 3D cube, then explode
 many 3D cubes inside a bounding sphere — is implemented independently by
 several different AI models/agents (GPT-5.3 Codex, Gemini 3.1 Pro, Claude
 Sonnet 4.6, Grok 4.5, ...). Each model's solution lives in its own folder
-under `src/<model-name>/` and is not shared with the other models. A human
+under `es2025/src/<model-name>/` and is not shared with the other models. A human
 maintainer only reviews, validates, and wires the generated code into the
 app; Copilot (or another agent) authors the actual feature logic.
 
 Keep this in mind when asked to modify code:
 
-- **Preserve model isolation.** Never move logic between `src/<model-name>/`
+- **The JavaScript app lives in `es2025/`.** `package.json`, `vite.config.js`,
+  `node_modules/` and all npm commands belong to that folder — run them from
+  `es2025/`. The repository root only holds documentation (`README.md`,
+  `plans/`, `code-review/`), `.github/` and `.vscode/`. `python3.13/` is an
+  empty placeholder for a possible future Python variant.
+- **Preserve model isolation.** Never move logic between `es2025/src/<model-name>/`
   folders, and never "fix" one model's implementation by copying another
   model's code — similar/duplicated logic **across** model folders is
   expected and desired, it demonstrates each model's independent approach.
   Only flag/fix duplication **within** the same model folder.
-- **`src/pages/`, `src/components/`, `main.js`, `global-style.css`,
-  `index.html`** are shared application shell code (routing, navigation,
-  bootstrap) and are not owned by any single model — they are fair game for
-  general maintenance.
+- **`es2025/src/pages/`, `es2025/src/components/`, `es2025/main.js`,
+  `es2025/global-style.css`, `es2025/index.html`** are shared application
+  shell code (routing, navigation, bootstrap) and are not owned by any single
+  model — they are fair game for general maintenance.
 - **`plans/`** holds per-model implementation plans; **`code-review/`** holds
-  AI-generated review reports per model. Both are documentation artifacts.
+  AI-generated review reports per model plus a consolidated
+  `conclusion.report.md`. Both are documentation artifacts.
+- `coverage/`, `dist/` and `node_modules/` are generated and git-ignored;
+  never edit or review them.
 
 ## Project structure
 
 ```
-main.js                     – app bootstrap, mounts the Menu component
-index.html                  – single Vite entry point
-global-style.css            – shared nav/layout styling
-src/
-  components/Menu.js        – top navigation + client-side router
-  pages/menu1.js … menu7.js – one render function per nav entry (page glue only)
-  gpt5.3-codex/features/     – GPT-5.3 Codex's independent solution (Babylon.js)
-  gemini3.1-pro/features/    – Gemini 3.1 Pro's independent solution (Three.js)
-  claude-sonnet-4.6/features/ – Claude Sonnet 4.6's independent solution
-  grok4.5/features/          – Grok 4.5's independent solution (Babylon.js)
-plans/                      – per-model feature/implementation plans
-code-review/                – per-model AI code-review results
-.github/instructions/       – scoped instructions applied to specific folders
+es2025/                      – the Vite + Vitest JavaScript app (ES2025 target)
+  main.js                    – app bootstrap, mounts the Menu component
+  index.html                 – single Vite entry point
+  global-style.css           – shared nav/layout styling
+  package.json, vite.config.js
+  src/
+    components/Menu.js       – top navigation + client-side router (lazy routes)
+    pages/menu1.js … menu7.js – one render function per page (page glue only);
+                               menu6/menu7 have page-level *.test.js specs
+    gpt5.3-codex/features/   – GPT-5.3 Codex's solution (Babylon.js)
+    gemini3.1-pro/features/  – Gemini 3.1 Pro's solution (Three.js)
+    claude-sonnet-4.6/features/ – Claude Sonnet 4.6's solution (2D only)
+    grok4.5/                 – Grok 4.5's solution (Babylon.js, 3D only)
+      cubes-exploding.css    – styles for its exploding-cubes section
+      features/
+plans/                       – per-model plans + js_clean_code_guide.md
+code-review/                 – per-model AI review reports + conclusion.report.md
+.github/
+  copilot-instructions.md    – this file
+  instructions/              – scoped review instructions
+.vscode/                     – launch.json, tasks.json (`npm: start` task)
+python3.13/                  – empty placeholder (no code yet)
 ```
 
-Each model folder mirrors the same kind of `features/` sub-structure so
-implementations stay comparable, though the 3D cube folder name and library
-vary per model:
+Tests are colocated with the code as `*.test.js` next to the module they cover.
+
+Each model folder uses the same kind of `features/` sub-structure so
+implementations stay comparable, though the set of features, the 3D cube
+folder name and the library vary per model:
 
 - `features/coordinate-system/` – 2D canvas grid, axes, scale, single cube.
+  Implemented by GPT-5.3 Codex, Gemini 3.1 Pro, and Claude Sonnet 4.6
+  (GPT-5.3 Codex also keeps a top-level `features/CoordinateSystem.js`).
 - `features/bouncing-squares/` – many 2D squares with random scale, motion,
-  rotation, wall bounce, and collision-based removal.
+  rotation, wall bounce, and collision-based removal. Implemented by
+  GPT-5.3 Codex, Gemini 3.1 Pro, and Claude Sonnet 4.6.
 - `features/cube-3d/` (GPT-5.3 Codex, Grok 4.5) or `features/threejs-cube/`
   (Gemini 3.1 Pro) – 3D cube rendering with camera/orbit controls, preserving
   rotation/scale/movement. GPT-5.3 Codex and Grok 4.5 use Babylon.js; Gemini
@@ -65,6 +87,15 @@ vary per model:
 - `features/cubes-exploding/` – many 3D cubes spawned inside a bounding
   sphere with physics, collision, and particle/disposal effects. Implemented
   by GPT-5.3 Codex, Gemini 3.1 Pro, and Grok 4.5.
+
+Claude Sonnet 4.6 has no 3D features yet, and Grok 4.5 has no 2D features yet.
+
+## Navigation
+
+`Menu.js` labels each entry with the model name; the route keys do not match
+the page file numbers (e.g. the "Basic" entry `menu1` renders `pages/menu4.js`,
+the overview page). See the README table for the full mapping. Page glue in
+`pages/` must stay thin: only wire a model's `features/` modules into the DOM.
 
 ## Tech stack & conventions
 
@@ -75,13 +106,16 @@ vary per model:
   into a folder that already picked one.
 - Build/dev tooling is [Vite](https://vitejs.dev/); tests use
   [Vitest](https://vitest.dev/) with the `jsdom` environment (see
-  `vite.config.js`).
+  `es2025/vite.config.js`). The build targets `es2025`.
 - Follow the scoped review rules in `.github/instructions/` when touching
-  `src/gpt5.3-codex/`, `src/gemini3.1-pro/`, or `src/grok4.5/` — they define
+  `es2025/src/gpt5.3-codex/`, `es2025/src/gemini3.1-pro/`, or
+  `es2025/src/grok4.5/` — they define
   clean-code, coordinate-system correctness, and Vitest mocking expectations
   for those folders.
 
 ## Common commands
+
+Run all commands from the `es2025/` folder.
 
 - `npm start` – run the Vite dev server (port 3500).
 - `npm run build` – production build into `dist/`.
@@ -89,5 +123,5 @@ vary per model:
 - `npm test` – run the full Vitest suite with coverage.
 
 When changing code under a `features/` folder, run the narrowest Vitest
-selector for the touched files (e.g. `npx vitest run src/grok4.5/features/cube-3d`)
+selector for the touched files (e.g. `npx vitest run src/grok4.5/features/cube-3d`, run from `es2025/`)
 before considering the change complete.

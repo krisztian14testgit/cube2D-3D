@@ -16,13 +16,13 @@ Programmer just checks the generated codes part and validate them.
 - - Collision: When two square encounter each other, they will disappear from the sphere.
 
 ## Supported languages
-- Default lang: vanillaJs + html canvas
-- Libraires:
+- Default lang: vanillaJs (ES2025) + html canvas, located in [es2025/](/es2025)
+- Libraries:
     - BabylonJs
     - Threejs
     - Vite build tool
-- It will be written by Python: 
-    - v3.x
+- Planned: a Python variant (placeholder folder [python3.13/](/python3.13), currently empty):
+    - v3.13
     - one supported graphics lib
 
 ## What this project actually is
@@ -31,7 +31,7 @@ This repository is an **LLM comparison sandbox**. The same brief (draw a 2D
 coordinate system, animate bouncing/rotating squares, render a 3D cube, then
 make many 3D cubes explode inside a bounding sphere) is handed to several
 different AI coding agents / models. Each model implements the brief
-independently, in its own folder under [src/](/src), without looking at the
+independently, in its own folder under [es2025/src/](/es2025/src), without looking at the
 other models' code. A human (the repository owner) only reviews, validates,
 and wires up the generated code — the actual feature logic is authored by the
 LLMs themselves. **The goal** is to observe how different models approach the
@@ -40,51 +40,63 @@ same problem: code structure, naming, test coverage, and correctness.
 ## Project structure
 
 ```
-├── main.js                 # App bootstrap, mounts the Menu component
-├── index.html               # Single HTML entry point (Vite)
-├── global-style.css         # Shared layout/nav styling for every menu page
-├── src/
-│   ├── components/
-│   │   └── Menu.js          # Top navigation bar + client-side router (hash-less)
-│   ├── pages/
-│   │   ├── menu1.js … menu7.js   # One render function per navigation entry
-│   │   └── *.test.js             # Vitest specs for the page wiring
-│   ├── gpt5.3-codex/         # GPT-5.3 Codex's independent solution (Babylon.js)
-│   │   └── features/
-│   │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
-│   │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
-│   │       ├── cube-3d/            # 3D cube rendering with Babylon.js
-│   │       └── cubes-exploding/    # Many exploding 3D cubes (Babylon.js)
-│   ├── gemini3.1-pro/        # Gemini 3.1 Pro's independent solution (Three.js)
-│   │   └── features/
-│   │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
-│   │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
-│   │       ├── threejs-cube/       # 3D cube rendering with Three.js
-│   │       └── cubes-exploding/    # Many exploding 3D cubes (Three.js)
-│   ├── claude-sonnet-4.6/    # Claude Sonnet 4.6's independent solution
-│   └── grok4.5/              # Grok 4.5's independent solution (Babylon.js)
-│       └── features/
-│           ├── coordinate-system/  # 2D canvas grid, axes, cube square
-│           ├── bouncing-squares/   # Step 2: physics, collision, rotation
-│           ├── cube-3d/            # Step 4: 3D cube rendering (WebGL)
-│           └── cubes-exploding/    # Bonus: many exploding 3D cubes
-├── plans/                    # Per-model implementation/feature plans
-├── code-review/              # Per-model AI-generated code review results
+├── es2025/                  # The JavaScript app (Vite + Vitest, ES2025 target)
+│   ├── main.js              # App bootstrap, mounts the Menu component
+│   ├── index.html           # Single HTML entry point (Vite)
+│   ├── global-style.css     # Shared layout/nav styling for every menu page
+│   ├── package.json         # Scripts and dependencies (run npm commands here)
+│   ├── vite.config.js       # Dev server (port 3500), build and jsdom test config
+│   └── src/
+│       ├── components/
+│       │   └── Menu.js      # Top navigation bar + lazy-loaded client-side router
+│       ├── pages/
+│       │   ├── menu1.js … menu7.js   # One render function per page
+│       │   └── menu6/menu7 *.test.js # Vitest specs for the page wiring
+│       ├── gpt5.3-codex/     # GPT-5.3 Codex's independent solution (Babylon.js)
+│       │   └── features/
+│       │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│       │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
+│       │       ├── cube-3d/            # 3D cube rendering with Babylon.js
+│       │       └── cubes-exploding/    # Many exploding 3D cubes (Babylon.js)
+│       ├── gemini3.1-pro/    # Gemini 3.1 Pro's independent solution (Three.js)
+│       │   └── features/
+│       │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│       │       ├── bouncing-squares/   # Step 2: physics, collision, rotation
+│       │       ├── threejs-cube/       # 3D cube rendering with Three.js
+│       │       └── cubes-exploding/    # Many exploding 3D cubes (Three.js)
+│       ├── claude-sonnet-4.6/  # Claude Sonnet 4.6's independent solution (2D only)
+│       │   └── features/
+│       │       ├── coordinate-system/  # 2D canvas grid, axes, cube square
+│       │       └── bouncing-squares/   # Step 2: physics, collision, rotation
+│       └── grok4.5/          # Grok 4.5's independent solution (Babylon.js, 3D only)
+│           ├── cubes-exploding.css     # Styles for the exploding-cubes section
+│           └── features/
+│               ├── cube-3d/            # Step 4: 3D cube rendering (Babylon.js)
+│               └── cubes-exploding/    # Bonus: many exploding 3D cubes
+├── plans/                    # Per-model plans (gemini/, gpt5.3-codex/, grok4.5/) + js_clean_code_guide.md
+├── code-review/              # Per-model AI code review reports + conclusion.report.md
+├── python3.13/               # Placeholder for a future Python variant (empty)
+├── .vscode/                  # launch.json and tasks.json (`npm: start` task)
 └── .github/
     ├── copilot-instructions.md      # Repo-wide instructions for GitHub Copilot
-    └── instructions/                 # Scoped review/coding instruction files
+    └── instructions/                 # Scoped review instruction files
 ```
 
-Every model folder under `src/` mirrors the same kind of `features/`
+Generated folders (`coverage/`, `dist/`, `node_modules/`) are git-ignored.
+Tests are colocated with the code as `*.test.js` files.
+
+Every model folder under `es2025/src/` uses the same kind of `features/`
 sub-structure (`coordinate-system`, `bouncing-squares`, a 3D cube feature, and
-`cubes-exploding`) so that implementations stay easy to compare side by side.
+`cubes-exploding`) so that implementations stay easy to compare side by side,
+but not every model covers every feature: Claude Sonnet 4.6 implements only the
+2D steps, and Grok 4.5 only the 3D steps.
 The 3D cube folder name varies per model — `cube-3d/` for GPT-5.3 Codex and
 Grok 4.5 (both Babylon.js), `threejs-cube/` for Gemini 3.1 Pro (Three.js) —
 since each model chose its own naming and 3D library independently.
 
 ## Navigation menu
 
-The top navigation bar (see [Menu.js](/src/components/Menu.js)) exposes one
+The top navigation bar (see [Menu.js](/es2025/src/components/Menu.js)) exposes one
 entry per implementation/feature. The menu **labels** intentionally show the
 LLM name that produced the underlying code, so the visitor always knows which
 model is being showcased:
@@ -95,33 +107,36 @@ model is being showcased:
 | GPT-5.3-Codex | `menu1.js` | Coordinate system + bouncing squares by GPT-5.3 Codex |
 | Gemini 3.1 pro | `menu2.js` | Coordinate system + bouncing squares by Gemini 3.1 Pro |
 | Claude Sonnet 4.6 | `menu3.js` | Coordinate system + bouncing squares by Claude Sonnet 4.6 |
-| Gemini3.1-pro - 3D threejs | `menu5.js` | 3D cube scene by Gemini 3.1 Pro (Three.js) |
+| Gemini3.1-pro - 3D threejs | `menu5.js` | 3D cube + cubes-exploding scene by Gemini 3.1 Pro (Three.js) |
 | GPT5.3-codex - 3D babylonjs | `menu6.js` | 3D cube + cubes-exploding scene by GPT-5.3 Codex (Babylon.js) |
 | Grok4.5 - 3D babylonjs | `menu7.js` | 3D cube + cubes-exploding scene by Grok 4.5 (Babylon.js) |
 
 ## Tech stack
 
-- Vanilla JavaScript (ES modules), HTML5 canvas for 2D drawing.
+- Vanilla JavaScript (ES modules, built for the `es2025` target), HTML5 canvas for 2D drawing.
 - Graphics libraries: [Babylon.js](https://www.babylonjs.com/) and [Three.js](https://threejs.org/) for 3D rendering, depending on the model's choice.
 - [Vite](https://vitejs.dev/) for the dev server and production build.
 - [Vitest](https://vitest.dev/) + `jsdom` for unit/integration tests.
 
 ## Scripts
 
-- `npm start` – run the Vite dev server.
-- `npm run build` – build the production bundle into `dist/` folder.
-- `npm run build:prod` – preview the production build.
+Run these from the [es2025/](/es2025) folder (`cd es2025`, then `npm install` once):
+
+- `npm start` – run the Vite dev server (port 3500).
+- `npm run build` – build the development bundle into `es2025/dist/`.
+- `npm run build:prod` – build the minified production bundle.
 - `npm test` – run the Vitest suite with coverage.
 
 ## Code review process
 
 Each model's implementation is additionally reviewed by AI code-review agents
 using the scoped rules in [.github/instructions/](/.github/instructions). The
-resulting reports are stored per model under [code-review/](/code-review) for
+resulting reports (Claude Sonnet, GPT-5.6 Terra, Grok 4.6, Kimi K3) are stored under [code-review/](/code-review) for
 transparency and comparison.
 
 ### Review conclusion and improvement plans
 
 - [Consolidated conclusion report](/code-review/conclusion.report.md) – the findings of the four review reports merged and grouped by severity (Major, Minor, Low).
-- [Gemini improvement plan](/plans/gemini/improvement-plan.md) – planned fixes for `src/gemini3.1-pro` based on the conclusion report.
-- [GPT-5.3 Codex improvement plan](/plans/gpt5.3-codex/improvement-plan.md) – planned fixes for `src/gpt5.3-codex` based on the conclusion report.
+- [Gemini improvement plan](/plans/gemini/improvement-plan.md) – planned fixes for `es2025/src/gemini3.1-pro` based on the conclusion report.
+- [GPT-5.3 Codex improvement plan](/plans/gpt5.3-codex/improvement-plan.md) – planned fixes for `es2025/src/gpt5.3-codex` based on the conclusion report.
+- [JS clean-code guide](/plans/js_clean_code_guide.md) – the baseline used by the review instructions.
