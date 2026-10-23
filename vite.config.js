@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    target: 'es2025',
     chunkSizeWarningLimit: 6500,
     minify: mode === 'production',
   },
