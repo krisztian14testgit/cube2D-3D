@@ -1,0 +1,96 @@
+[project]
+name = "grok-4-7"
+version = "0.1.0"
+description = "Grok 4.7 playground for 2D coordinates, bouncing squares, and exploding 3D cubes."
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "pyvista",
+    "trame",
+    "trame-vtk",
+    "trame-vuetify",
+    "trame-pyvista",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy",
+    "pytest>=8",
+    "pytest-cov",
+    "pytest-mock",
+    "ruff",
+]
+
+[project.scripts]
+grok-4-7 = "grok_4_7.app:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "C4", "PT", "RET", "ARG", "ANN"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["ANN"]
+"src/grok_4_7/adapters/orbit_style.py" = ["N802"]
+"tests/grok_4_7/test_adapters.py" = ["N802"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+mypy_path = "src"
+packages = ["grok_4_7"]
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["grok_4_7.adapters.orbit_style"]
+disallow_subclassing_any = false
+
+[[tool.mypy.overrides]]
+module = ["grok_4_7.adapters.pyvista_renderer", "grok_4_7.adapters.pyvista_picker"]
+disable_error_code = ["arg-type", "attr-defined", "call-arg", "no-any-return", "var-annotated"]
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy",
+    "numpy.*",
+    "pyvista",
+    "pyvista.*",
+    "trame.*",
+    "trame_client.*",
+    "trame_pyvista",
+    "trame_pyvista.*",
+    "vtk",
+    "vtkmodules",
+    "vtkmodules.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra --strict-markers --strict-config -m \"not integration\" --cov=src --cov-branch --cov-report=term-missing --cov-fail-under=90"
+markers = [
+    "integration: needs a real render window or server",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
