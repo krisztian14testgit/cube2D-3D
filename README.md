@@ -21,9 +21,9 @@ Programmer just checks the generated codes part and validate them.
     - BabylonJs
     - Threejs
     - Vite build tool
-- Planned: a Python variant (placeholder folder [python3.13/](/python3.13), currently empty):
+- Python 3.13 playground in [python3.13/](/python3.13) (`grok_4_7`, PyVista + trame). Menus: "Grok 4.7 — 2D-coord" and "Grok 4.7 — 3D-cubes".
     - v3.13
-    - one supported graphics lib
+    - PyVista for rendering, trame for the UI
 
 ## What this project actually is
 
@@ -75,7 +75,7 @@ same problem: code structure, naming, test coverage, and correctness.
 │               └── cubes-exploding/    # Bonus: many exploding 3D cubes
 ├── plans/                    # Per-model plans (gemini/, gpt5.3-codex/, grok4.5/) + js_clean_code_guide.md
 ├── code-review/              # Per-model AI code review reports + conclusion.report.md
-├── python3.13/               # Placeholder for a future Python variant (empty)
+├── python3.13/               # Grok 4.7 Python playground (PyVista + trame)
 ├── .vscode/                  # launch.json and tasks.json (`npm: start` task)
 └── .github/
     ├── copilot-instructions.md      # Repo-wide instructions for GitHub Copilot

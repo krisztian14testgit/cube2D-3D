@@ -24,8 +24,9 @@ Keep this in mind when asked to modify code:
 - **The JavaScript app lives in `es2025/`.** `package.json`, `vite.config.js`,
   `node_modules/` and all npm commands belong to that folder — run them from
   `es2025/`. The repository root only holds documentation (`README.md`,
-  `plans/`, `code-review/`), `.github/` and `.vscode/`. `python3.13/` is an
-  empty placeholder for a possible future Python variant.
+  `plans/`, `code-review/`), `.github/` and `.vscode/`. `python3.13/` is the
+  Grok 4.7 Python playground (`grok_4_7`, PyVista + trame) with menus
+  "Grok 4.7 — 2D-coord" and "Grok 4.7 — 3D-cubes".
 - **Preserve model isolation.** Never move logic between `es2025/src/<model-name>/`
   folders, and never "fix" one model's implementation by copying another
   model's code — similar/duplicated logic **across** model folders is
@@ -65,7 +66,7 @@ code-review/                 – per-model AI review reports + conclusion.report
   copilot-instructions.md    – this file
   instructions/              – scoped review instructions
 .vscode/                     – launch.json, tasks.json (`npm: start` task)
-python3.13/                  – empty placeholder (no code yet)
+python3.13/                  – Grok 4.7 Python playground (menus: 2D-coord, 3D-cubes)
 ```
 
 Tests are colocated with the code as `*.test.js` next to the module they cover.
