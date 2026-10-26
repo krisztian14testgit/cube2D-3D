@@ -89,7 +89,7 @@ def test_coordinate_scene__step__does_not_move_the_square() -> None:
     scene = CoordinateScene(renderer, FakeCamera())
     scene.build()
     scene.step(1.0)
-    assert renderer.meshes["square"].transform.position == ORIGIN  # type: ignore[union-attr]
+    assert renderer.meshes["square"].transform.position == Vec3(5.0, 5.0, 0.0)  # type: ignore[union-attr]
 
 
 def test_build_axis_line__unknown_axis__raises() -> None:

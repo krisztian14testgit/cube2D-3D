@@ -8,7 +8,7 @@ from typing import Final
 
 logger = logging.getLogger(__name__)
 
-MAX_DELTA_SECONDS: Final = 0.05
+MAX_DELTA_SECONDS: Final = 0.25
 FRAME_SECONDS: Final = 1.0 / 60.0
 
 

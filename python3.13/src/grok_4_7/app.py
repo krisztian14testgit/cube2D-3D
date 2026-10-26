@@ -21,7 +21,7 @@ from grok_4_7.adapters.orbit_style import configure_interaction
 from grok_4_7.adapters.pyvista_picker import PlotterRaySource, RayPicker
 from grok_4_7.adapters.pyvista_renderer import PyVistaCamera, PyVistaRenderer
 from grok_4_7.errors import InvalidAxisError, InvalidColorError
-from grok_4_7.features.bouncing_squares.constants import DEFAULT_MAX_SQUARES
+from grok_4_7.features.bouncing_squares.constants import DEFAULT_MAX_SQUARES, DEFAULT_SPEED
 from grok_4_7.features.bouncing_squares.math import format_square_status
 from grok_4_7.features.coordinate_system.constants import DEFAULT_SCALE
 from grok_4_7.features.cube_3d.constants import (
@@ -89,6 +89,7 @@ def build_app(server: object | None = None, overrides: AppOverrides | None = Non
         _add_toolbar(layout, app_server, host)
         _attach(app_server, host, layout)
     host.show(PAGE_COORD)
+    _flush_layout(app_server)
     _activate_timer_on_ready(app_server, host)
     return app_server
 
@@ -104,6 +105,7 @@ def _seed_state(state: object) -> None:
     state.page = PAGE_COORD  # type: ignore[attr-defined]
     state.coord_scale = DEFAULT_SCALE  # type: ignore[attr-defined]
     state.max_squares = DEFAULT_MAX_SQUARES  # type: ignore[attr-defined]
+    state.square_speed = DEFAULT_SPEED  # type: ignore[attr-defined]
     state.square_status = format_square_status(0, DEFAULT_MAX_SQUARES)  # type: ignore[attr-defined]
     state.rotation_axis = "y"  # type: ignore[attr-defined]
     state.rotation_speed = DEFAULT_ROTATION_SPEED  # type: ignore[attr-defined]
@@ -126,8 +128,26 @@ def _add_toolbar(layout: object, server: object, host: PageHost) -> None:
 def _show_page(server: object, host: PageHost, page: str) -> None:
     server.state.page = page  # type: ignore[attr-defined]
     host.show(page)
+    _flush_layout(server)
     _sync_status(server, host)
     host.refresh_views()
+
+
+def _flush_layout(server: object) -> None:
+    """Push the rebuilt page template to the browser."""
+    layout = getattr(server, "grok_layout", None)
+    if layout is not None:
+        layout.flush_content()
+    host = getattr(server, "grok_host", None)
+    if host is not None:
+        _apply_square_controls(server, host)
+
+
+def _apply_square_controls(server: object, host: PageHost) -> None:
+    """Make a freshly built bouncing scene match the slider values kept in state."""
+    state = server.state  # type: ignore[attr-defined]
+    _set_square_speed(host, state.square_speed)
+    _set_max_squares(server, host, state.max_squares)
 
 
 def _wire_handlers(server: object, host: PageHost) -> None:
@@ -135,6 +155,7 @@ def _wire_handlers(server: object, host: PageHost) -> None:
     state.change("page")(_on_page(server, host))
     state.change("coord_scale")(_on_coord_scale(host))
     state.change("max_squares")(_on_max_squares(server, host))
+    state.change("square_speed")(_on_square_speed(host))
     state.change("rotation_axis")(_on_axis(host))
     state.change("rotation_speed")(_on_speed(host))
     state.change("cube_scale")(_on_cube_scale(host))
@@ -155,6 +176,7 @@ def _wire_handlers(server: object, host: PageHost) -> None:
 def _on_page(server: object, host: PageHost) -> Callable[..., None]:
     def _handle(page: str, **_kwargs: object) -> None:
         host.show(str(page))
+        _flush_layout(server)
         _sync_status(server, host)
         host.refresh_views()
 
@@ -164,6 +186,13 @@ def _on_page(server: object, host: PageHost) -> Callable[..., None]:
 def _on_coord_scale(host: PageHost) -> Callable[..., None]:
     def _handle(coord_scale: object, **_kwargs: object) -> None:
         _scale_square(host, coord_scale)
+
+    return _handle
+
+
+def _on_square_speed(host: PageHost) -> Callable[..., None]:
+    def _handle(square_speed: object, **_kwargs: object) -> None:
+        _set_square_speed(host, square_speed)
 
     return _handle
 
@@ -240,7 +269,7 @@ def _make_host(server: object, settings: AppOverrides) -> PageHost:
         rng_factory=lambda: rng,
         plotter_factory=settings.plotter_factory or _plotter,
         timer_factory=settings.timer_factory or (lambda: _timer(settings)),
-        view_factory=settings.view_factory or _view,
+        view_factory=settings.view_factory or (lambda plotter: _view(plotter, server)),
         renderer_factory=settings.renderer_factory or _renderer,  # type: ignore[arg-type]
         camera_factory=settings.camera_factory or _camera,  # type: ignore[arg-type]
         picker_factory=settings.picker_factory or _picker,  # type: ignore[arg-type]
@@ -299,6 +328,13 @@ def _scale_square(host: PageHost, value: object) -> None:
         logger.debug("ignored square scale %s", value)
         return
     host.refresh_views()
+
+
+def _set_square_speed(host: PageHost, value: object) -> None:
+    scene = host.bouncing_scene
+    if scene is None:
+        return
+    scene.set_speed(_as_float(value))
 
 
 def _set_max_squares(server: object, host: PageHost, value: object) -> None:
@@ -385,6 +421,7 @@ def _sync_status(server: object, host: PageHost) -> None:
         state.cube_status = host.cube_scene.status_text
     if host.exploding_scene is not None:
         state.exploding_status = host.exploding_scene.status_text
+    state.flush()
 
 
 def _as_float(value: object) -> float:
@@ -415,12 +452,13 @@ def _picker(plotter: object, radius_of: Callable[[], float]) -> RayPicker:
     return RayPicker(PlotterRaySource(plotter), radius_of)
 
 
-def _view(plotter: object) -> object:
+def _view(plotter: object, server: object | None = None) -> object:
     return plotter_ui(  # type: ignore[no-untyped-call]
         plotter,
         mode="server",
         add_menu=False,
         default_server_rendering=True,
+        server=server,
     )
 
 

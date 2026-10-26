@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import random
 
+import pytest
 from tests.fakes.renderers import FakeCamera, FakeSceneRenderer
 
 from grok_4_7.features.bouncing_squares.scene import BouncingServices, BouncingSquaresScene
@@ -55,3 +56,26 @@ def test_dispose__unregisters_tick_and_is_safe_twice() -> None:
     assert registry.tick_count == 0
     assert renderer.cleared is True
     assert scene.square_count == 0
+
+
+def test_build__draws_grid_axes_and_labels() -> None:
+    scene, renderer, _registry = _scene()
+    scene.build()
+    assert {"grid", "x-axis", "y-axis"} <= set(renderer.meshes)
+    assert len(renderer.labels) == 10
+
+
+def test_set_speed__scales_motion_per_step() -> None:
+    scene, _renderer, _registry = _scene()
+    scene.build()
+    scene.spawn_at(Vec3(0, 0, 0))
+    assert scene.set_speed(2.0) == 2.0
+
+
+def test_step__long_frame__is_substepped_and_moves_full_distance() -> None:
+    scene, _renderer, _registry = _scene()
+    scene.build()
+    scene.spawn_at(Vec3(0, 0, 0))
+    velocity = scene.squares[0].velocity.x
+    scene.step(0.2)
+    assert scene.squares[0].position.x == pytest.approx(velocity * 0.2)

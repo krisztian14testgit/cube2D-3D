@@ -8,8 +8,12 @@ from trame.widgets import html, vuetify3
 
 from grok_4_7.features.bouncing_squares.constants import (
     DEFAULT_MAX_SQUARES,
+    DEFAULT_SPEED,
     MAX_MAX_SQUARES,
+    MAX_SPEED,
     MIN_MAX_SQUARES,
+    MIN_SPEED,
+    SPEED_STEP,
 )
 from grok_4_7.features.coordinate_system.constants import (
     DEFAULT_SCALE,
@@ -128,6 +132,15 @@ def _bounce_controls() -> None:
         hide_details=True,
     )
     html.Div("{{ square_status }}", classes="text-body-2 mt-2")
+    vuetify3.VSlider(
+        v_model=("square_speed", DEFAULT_SPEED),
+        min=MIN_SPEED,
+        max=MAX_SPEED,
+        step=SPEED_STEP,
+        label="Speed",
+        thumb_label=True,
+        hide_details=True,
+    )
 
 
 def _cube_controls() -> None:

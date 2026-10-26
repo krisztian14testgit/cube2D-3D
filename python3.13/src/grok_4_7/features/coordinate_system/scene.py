@@ -12,6 +12,8 @@ from grok_4_7.features.coordinate_system.constants import (
     MAX_SCALE,
     MIN_SCALE,
     PARALLEL_SCALE,
+    SQUARE_CENTER_X,
+    SQUARE_CENTER_Y,
     SQUARE_COLOR,
     SQUARE_NAME,
     X_AXIS_COLOR,
@@ -96,7 +98,7 @@ class CoordinateScene:
         self._renderer.refresh()
 
     def _square_transform(self) -> Transform:
-        return Transform(ORIGIN, Vec3(0.0, 0.0, 0.0), self._scale)
+        return Transform(Vec3(SQUARE_CENTER_X, SQUARE_CENTER_Y, 0.0), Vec3(0.0, 0.0, 0.0), self._scale)
 
     def _orthographic_view(self) -> OrthographicView:
         return OrthographicView(

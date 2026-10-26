@@ -10,6 +10,7 @@ from tests.fakes.renderers import FakeCamera, FakePicker, FakeSceneRenderer, Fak
 from trame.app import get_server
 
 from grok_4_7.app import AppOverrides, build_app, main
+from grok_4_7.frame_time import MAX_DELTA_SECONDS
 from grok_4_7.pages.copy import LABEL_COORD, LABEL_CUBES, PAGE_COORD, PAGE_CUBES
 
 
@@ -145,7 +146,7 @@ def test_timer_tick__clamps_delta_before_step() -> None:
     velocity = host.bouncing_scene.squares[0].velocity.x
     timers[0].fire(1.0)
     after = host.bouncing_scene.squares[0].position.x
-    assert after - before == __import__("pytest").approx(velocity * 0.05)
+    assert after - before == __import__("pytest").approx(velocity * MAX_DELTA_SECONDS)
 
 
 def test_main__starts_on_port_8080(mocker) -> None:  # type: ignore[no-untyped-def]

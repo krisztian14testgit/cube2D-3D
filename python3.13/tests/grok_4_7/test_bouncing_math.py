@@ -125,3 +125,20 @@ def test_simulation_set_max_squares__below_count__does_not_delete() -> None:
     simulation.spawn_at(Vec3(1, 0, 0))
     assert simulation.set_max_squares(5) == 5
     assert simulation.square_count == 2
+
+
+def test_simulation_set_speed__clamps_and_non_finite_resets() -> None:
+    simulation = BouncingSimulation(ScriptedRandom([]))  # type: ignore[arg-type]
+    assert simulation.set_speed(100.0) == 5.0
+    assert simulation.set_speed(0.0) == 0.25
+    assert simulation.set_speed(float("nan")) == 1.0
+
+
+def test_simulation_step__speed_multiplier__scales_distance() -> None:
+    slow = BouncingSimulation(ScriptedRandom([]), squares=[_square("s", 0.0, 0.4, 1.0)])  # type: ignore[arg-type]
+    fast = BouncingSimulation(ScriptedRandom([]), squares=[_square("s", 0.0, 0.4, 1.0)])  # type: ignore[arg-type]
+    fast.set_speed(3.0)
+    slow.step(0.1)
+    fast.step(0.1)
+    assert slow.squares[0].position.x == pytest.approx(0.1)
+    assert fast.squares[0].position.x == pytest.approx(0.3)

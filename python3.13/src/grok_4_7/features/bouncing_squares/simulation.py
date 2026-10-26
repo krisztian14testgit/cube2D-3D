@@ -6,7 +6,12 @@ import random
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from grok_4_7.features.bouncing_squares.constants import DEFAULT_MAX_SQUARES
+from grok_4_7.features.bouncing_squares.constants import (
+    DEFAULT_MAX_SQUARES,
+    DEFAULT_SPEED,
+    MAX_SPEED,
+    MIN_SPEED,
+)
 from grok_4_7.features.bouncing_squares.math import (
     SquareState,
     apply_wall_bounce,
@@ -19,6 +24,7 @@ from grok_4_7.features.bouncing_squares.math import (
     removal_order,
 )
 from grok_4_7.math_types import Vec3
+from grok_4_7.numbers import is_finite_number
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,6 +47,7 @@ class BouncingSimulation:
         self._rng = rng
         self._squares = list(squares or ())
         self._max_squares = clamp_max_squares(max_squares)
+        self._speed = DEFAULT_SPEED
         self._next_id = _next_id(self._squares)
 
     @property
@@ -71,11 +78,20 @@ class BouncingSimulation:
         self._max_squares = clamp_max_squares(value)
         return self._max_squares
 
+    def set_speed(self, value: float) -> float:
+        """Clamp and store the motion speed multiplier. Non-finite input resets to default."""
+        if not is_finite_number(value):
+            self._speed = DEFAULT_SPEED
+        else:
+            self._speed = min(MAX_SPEED, max(MIN_SPEED, float(value)))
+        return self._speed
+
     def step(self, delta_seconds: float) -> SquareStep:
         """Integrate, bounce, then remove every overlapping index once."""
         if not self._squares:
             return SquareStep((), ())
-        moved = [apply_wall_bounce(integrate_square(square, delta_seconds)) for square in self._squares]
+        scaled = delta_seconds * self._speed
+        moved = [apply_wall_bounce(integrate_square(square, scaled)) for square in self._squares]
         order = removal_order(moved)
         removed = tuple(moved[index].name for index in order)
         doomed = set(order)
