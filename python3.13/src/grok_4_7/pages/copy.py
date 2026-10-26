@@ -2,8 +2,10 @@
 
 from typing import Final
 
+from grok_4_7 import __version__
+
 AUTHOR_LINE: Final = "Created by Grok 4.7"
-TOOLBAR_TITLE: Final = "Grok 4.7"
+TOOLBAR_TITLE: Final = f"Grok 4.7 v{__version__}"
 LABEL_COORD: Final = "Grok 4.7 — 2D-coord"
 LABEL_CUBES: Final = "Grok 4.7 — 3D-cubes"
 PAGE_COORD: Final = "coord_2d"

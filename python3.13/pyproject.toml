@@ -1,6 +1,6 @@
 [project]
 name = "grok-4-7"
-version = "0.1.0"
+version = "0.2.0"
 description = "Grok 4.7 playground for 2D coordinates, bouncing squares, and exploding 3D cubes."
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
